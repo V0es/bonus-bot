@@ -13,7 +13,6 @@ def _register_admin_handlers(dp: Dispatcher):
     dp.register_message_handler(export, commands=['export'])
     dp.register_message_handler(set_account, commands=['set_account'])
 
-
 def _register_owner_handlers(dp: Dispatcher):
     dp.register_message_handler(add_admin, commands=['add_admin'])
     dp.register_message_handler(remove_admin, commands=['remove_admin'])
@@ -27,8 +26,9 @@ def _register_common_handlers(dp: Dispatcher):
     dp.register_message_handler(start, commands=['start', 'help'])
     dp.register_message_handler(change_phone, commands=['change_phone'])
     dp.register_message_handler(change_email, commands=['change_email'])
-    dp.register_message_handler(login, commands=['login'])
-    dp.register_message_handler(register, commands=['register'])
+    dp.register_callback_query_handler(login, text='login')
+    dp.register_callback_query_handler(register, text='register')
+    
 
 
 def register_handlers(dp: Dispatcher):

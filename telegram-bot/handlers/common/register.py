@@ -1,5 +1,6 @@
 from aiogram import types
 
 # register state with FSM
-async def register(message: types.Message):
-    await message.answer(f'You are registered!')
+async def register(callback: types.CallbackQuery):
+    await callback.message.answer('U pressed Register')
+    await callback.answer()
