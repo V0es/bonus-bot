@@ -3,7 +3,9 @@ from .admin.owner import add_admin, remove_admin
 
 from .client import account_info
 
-from .common import change_email, change_phone, login, register, start
+from .common import change_email, change_phone, login, register, start, enter_fullname
+
+from states import Register
 
 from aiogram import Dispatcher
 
@@ -28,6 +30,7 @@ def _register_common_handlers(dp: Dispatcher):
     dp.register_message_handler(change_email, commands=['change_email'])
     dp.register_callback_query_handler(login, text='login')
     dp.register_callback_query_handler(register, text='register')
+    dp.register_message_handler(enter_fullname, state=Register)
     
 
 

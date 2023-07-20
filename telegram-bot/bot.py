@@ -7,11 +7,13 @@ from config import bot_token
 
 logging.basicConfig(level=logging.INFO)
 
+storage = MemoryStorage() # switch to Redis or Mongo
+
+
 # Initialize bot and dispatcher
 bot = Bot(token=bot_token)
-dp = Dispatcher(bot)
+dp = Dispatcher(bot, storage=storage)
 
-storage = MemoryStorage() # switch to Redis or Mongo
 
 from handlers import register_handlers
 register_handlers(dp)

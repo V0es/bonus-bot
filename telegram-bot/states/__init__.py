@@ -1,1 +1,1 @@
-from .test import Test
+from .register import Register
