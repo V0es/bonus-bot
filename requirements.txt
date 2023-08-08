@@ -1,3 +1,4 @@
 aiogram
 python-dotenv
 flake8
+sqlalchemy==2.0.0
