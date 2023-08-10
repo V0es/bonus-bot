@@ -1,12 +1,11 @@
 import unittest
-from telegram_bot.db.models import Database, User
 
 
 class TestDatabase(unittest.TestCase):
 
     @staticmethod
     def _create_db():
-        db = Database()
+        
         usr = User(user_id=123124, fullname='Test Test', phone_number='123123', email='mmm@gmail.com', bonus_points=0)
         return db, usr
 

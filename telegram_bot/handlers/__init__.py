@@ -1,3 +1,5 @@
+from aiogram import Dispatcher
+
 from .admin import add_order, export, set_account
 from .admin.owner import add_admin, remove_admin
 
@@ -7,8 +9,6 @@ from .common import change_email, change_phone, login, register, start, enter_fu
     confirm_otp, resend_otp
 
 from states import Register
-
-from aiogram import Dispatcher
 
 
 def _register_admin_handlers(dp: Dispatcher):

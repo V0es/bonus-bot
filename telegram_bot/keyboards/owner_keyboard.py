@@ -1,6 +1,6 @@
-from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
-kb1 = KeyboardButton('кнопка1')
-kb2 = KeyboardButton('кнопка2')
+# kb1 = InlineKeyboardButton('кнопка1', callback_data='1')
+# kb2 = InlineKeyboardButton('кнопка2', callback_data='2')
 
-kbm = ReplyKeyboardMarkup().add(kb1).add(kb2)
+# kbm = InlineKeyboardMarkup(row_width=1, inline_keyboard=[[kb1, kb2]])
