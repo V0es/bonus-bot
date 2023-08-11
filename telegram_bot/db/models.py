@@ -5,7 +5,7 @@ from sqlalchemy.orm import as_declarative, Mapped, mapped_column, Session, decla
 
 from sqlalchemy.sql.functions import current_timestamp
 
-from telegram_bot.db.base import BaseModel
+from db.base import BaseModel
 
 
 class User(BaseModel):

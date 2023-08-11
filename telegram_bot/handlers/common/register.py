@@ -1,9 +1,12 @@
 from states import Register
 from keyboards import confirm_otp_keyboard
 
+from db.requests import add_user
 
 from aiogram.fsm.context import FSMContext
 from aiogram import types, Router
+
+from sqlalchemy.ext.asyncio import AsyncSession
 
 
 import re
@@ -34,7 +37,7 @@ async def enter_phone_number(message: types.Message, state: FSMContext):  # TODO
 @router.message()
 async def enter_email(message: types.Message, state: FSMContext):  # TODO: проверка на корректность почты
     answer = message.text
-    await state.update_data(enter_email=answer)
+    await state.update_data(email=answer)
     await message.answer('Отлично, теперь введи ФИО, например, Иванов Иван Иванович')
     await state.set_state(Register.enter_fullname)
     
@@ -57,10 +60,12 @@ async def confirm_otp(message: types.Message, state: FSMContext):
         
 
 @router.message()
-async def enter_fullname(message: types.Message, state: FSMContext):  # TODO: проверка на корректность фио
+async def enter_fullname(message: types.Message, state: FSMContext, session: AsyncSession):  # TODO: проверка на корректность фио
+    print('ENTER FULLNAME HANDLER! SESSION: ', session)
     answer = message.text
     await state.update_data(fullname=answer)
     data = await state.get_data()
     await message.answer(f'Отлично, регистрация завершена. Твои данные: {data}')
+    await add_user(session=session, state_data=data, user_id=message.from_user.id)
     await state.clear()
         

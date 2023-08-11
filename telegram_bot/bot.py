@@ -5,8 +5,14 @@ from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.enums import ParseMode
 
-from config import bot_token
+from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
+from sqlalchemy.orm import sessionmaker
+
+from middlewares.database_middleware import DatabaseMiddleware
+
+from config import config
 from handlers.common import register_common_commands
+from middlewares import register_middlewares
 # from handlers import register_handlers
 
 logging.basicConfig(level=logging.INFO)
@@ -16,8 +22,13 @@ async def main() -> None:
     storage = MemoryStorage()  # switch to Redis or Mongo
     # Initialize bot and dispatcher
     dp = Dispatcher(storage=storage)
-    bot = Bot(token=bot_token, parse_mode=ParseMode.HTML)
+    bot = Bot(token=config.bot_token, parse_mode=ParseMode.HTML)
     await bot.delete_webhook(drop_pending_updates=True)
+
+    engine = create_async_engine(config.db_url, echo=True, pool_pre_ping=True)
+    session_pool = sessionmaker(engine, class_=AsyncSession)
+
+    register_middlewares(dp, session_pool)
     register_common_commands(dp)
     await dp.start_polling(bot)
 

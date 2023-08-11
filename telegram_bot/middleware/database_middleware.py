@@ -1,2 +1,0 @@
-class DatabaseMiddleware:
-    pass
