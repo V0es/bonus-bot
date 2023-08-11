@@ -19,6 +19,7 @@ class Config():
         self.pg_port: str = self.get_variable('pg_port')
         self.db_name: str = self.get_variable('db_name')
         self.db_url = self._get_db_url()
+        self.debug = self.validate_debug(self.get_variable('debug'))
 
     @staticmethod
     def load_env():
@@ -37,6 +38,10 @@ class Config():
             port=self.pg_port,
             database=self.db_name
         )
+    
+    @staticmethod
+    def validate_debug(val: str):
+        return False if val == 'False' else True
 
 
 config = Config()

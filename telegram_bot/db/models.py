@@ -13,7 +13,9 @@ class User(BaseModel):
     fullname: Mapped[str] = mapped_column(nullable=False)
     phone_number: Mapped[str] = mapped_column(nullable=False, unique=True)
     email: Mapped[str] = mapped_column(nullable=False, unique=True)
-    bonus_points: Mapped[int] = mapped_column(nullable=True)
+    bonus_points: Mapped[int] = mapped_column(nullable=True, default=0)
+    is_admin: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    is_owner: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
 
     def __repr__(self) -> str:
         return f'''time:{self.timestamp}; id: {self.id}; user_id: {self.user_id}; fullname: {self.fullname};
@@ -36,8 +38,3 @@ class User(BaseModel):
             and self.phone_number == __o.phone_number
             and self.email == __o.email
         )
-
-
-class Admin(BaseModel):
-    is_owner: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
-    user_id: Mapped[int] = mapped_column(BigInteger, ForeignKey('User.user_id'))
