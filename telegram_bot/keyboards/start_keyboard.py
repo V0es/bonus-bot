@@ -1,6 +1,22 @@
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
-login_btn = InlineKeyboardButton(text='Войти', callback_data='login')
+
 register_btn = InlineKeyboardButton(text='Зарегистирироваться', callback_data='register')
 
-start_keyboard = InlineKeyboardMarkup(row_width=1, inline_keyboard=[[login_btn, register_btn]])
+start_unregistered_keyboard = InlineKeyboardMarkup(row_width=1, inline_keyboard=[[register_btn]])
+
+
+def get_unregistered_start_keyboard() -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup(row_width=1, inline_keyboard=[
+            [
+                InlineKeyboardButton(text='Зарегистирироваться', callback_data='register')
+            ]
+        ])
+    
+    
+def get_registered_start_keyboard() -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup(row_width=1, inline_keyboard=[
+        [
+            InlineKeyboardButton(text='Войти в главное меню', callback_data='main_menu')
+        ]
+    ])

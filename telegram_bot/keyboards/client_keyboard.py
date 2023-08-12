@@ -1,7 +1,12 @@
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
-account_info_btn = InlineKeyboardButton(text='Количество баллов', callback_data='0')
-change_phone_btn = InlineKeyboardButton(text='Сменить номер телефона', callback_data='0')
-change_email_btn = InlineKeyboardButton(text='Сменить эл.почту', callback_data='0')
 
-client_keyboard = InlineKeyboardMarkup(row_width=1, inline_keyboard=[[account_info_btn, change_phone_btn, change_email_btn]])
+def get_client_mainmenu_keyboard() -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup(row_width=1, inline_keyboard=[
+        [
+            InlineKeyboardButton(text='Мой профиль', callback_data='profile_menu'),
+            InlineKeyboardButton(text='Мои баллы', callback_data='account_info'),
+            InlineKeyboardButton(text='Акции', callback_data='promotions'),
+            InlineKeyboardButton(text='Связаться со службой поддержки(пока в разработке)', callback_data='0')
+        ]
+    ])
