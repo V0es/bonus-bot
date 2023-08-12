@@ -3,7 +3,9 @@ from typing import Callable, Dict, Any, Awaitable
 from sqlalchemy.orm import sessionmaker
 
 from aiogram import BaseMiddleware
-from aiogram.types import Message, TelegramObject
+from aiogram.types import Message, TelegramObject, CallbackQuery
+
+from db.requests import get_user_by_id
 
 
 class DatabaseMiddleware(BaseMiddleware):
@@ -14,10 +16,9 @@ class DatabaseMiddleware(BaseMiddleware):
     async def __call__(
         self,
         handler: Callable[[TelegramObject, Dict[str, Any]], Awaitable[Any]],
-        event: Message,
+        event: Message | CallbackQuery,
         data: Dict[str, Any]
     ) -> Any:
         async with self.session_pool() as session:
-            print('DB MIDDLEWARE, SESSION: ', session)
             data['session'] = session
             return await handler(event, data)
