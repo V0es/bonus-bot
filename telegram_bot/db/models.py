@@ -14,6 +14,7 @@ class User(BaseModel):
     phone_number: Mapped[str] = mapped_column(nullable=False, unique=True)
     email: Mapped[str] = mapped_column(nullable=False, unique=True)
     bonus_points: Mapped[int] = mapped_column(nullable=True, default=0)
+    last_scoring: Mapped[DateTime] = mapped_column(DateTime, nullable=True, onupdate=current_timestamp())
     is_admin: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     is_owner: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
 
