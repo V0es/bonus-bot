@@ -11,6 +11,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from exceptions import UserAlreadyExists
 
+from utils.otp import generate_otp
+from utils.web import sms_auth
+
+from config import config
+
 import re
 
 router = Router()
@@ -29,10 +34,13 @@ async def enter_phone_number(message: types.Message, state: FSMContext):  # TODO
     answer = message.text
     regexp = '^\+\d{1,3}\d{3}\d{7}$'
     if not len(re.findall(regexp, answer)):
-        await message.answer('Вы ввели неправильный номер телефона, попробуйте ещё раз.', reply_markup=confirm_otp_kb)
+        await message.answer('Вы ввели неправильный номер телефона, попробуйте ещё раз.')
         return
     await state.update_data(phone_number=answer)
-    await message.answer('Введите одноразовый пароль из SMS.', reply_markup=confirm_otp_kb)
+    otp_code = generate_otp()
+    await state.update_data(otp_code=otp_code)
+    sms_auth.sendSMS(recipients=answer[1:], message=f'Ваш код подтверждения: {otp_code}')
+    await message.answer('Введите одноразовый пароль из SMS.')
     await state.set_state(Register.confirm_otp)
     
 
@@ -51,19 +59,28 @@ async def enter_email(message: types.Message, state: FSMContext):  # TODO: пр�
 @router.callback_query()
 async def resend_otp(callback: types.CallbackQuery, state: FSMContext):
     # TODO: do some stuff to resend otp and check failed attempts
-    
-    pass
+    data = await state.get_data()
+    phone_number = data.get('phone_number')
+    otp_code = generate_otp()
+    await state.update_data(otp_code=otp_code)
+    sms_auth.sendSMS(recipients=phone_number[1:], message=f'Ваш код подтверждения: {otp_code}')
+    await callback.message.edit_text('Введите одноразовый пароль из SMS.')
+    await state.set_state(Register.confirm_otp)
 
 
 @router.message()
 async def confirm_otp(message: types.Message, state: FSMContext):
     answer = message.text
-    if answer == '0000':
+    data = await state.get_data()
+    valid_code = data.get('otp_code')
+    if answer == valid_code:
         await message.answer('Отлично, теперь введи почту.')
         await state.set_state(Register.enter_email)
     else:
-        await message.answer('Вы ввели неверный пароль. Попробуйте отправить новый позже', reply_markup=confirm_otp)
-        
+        await state.update_data(otp_code=None)
+        await state.set_state(Register.resend_otp)
+        await message.answer('Вы ввели неверный пароль. Попробуйте отправить новый', reply_markup=confirm_otp_kb)
+
 
 @router.message()
 async def enter_fullname(message: types.Message, state: FSMContext, session: AsyncSession):  # TODO: проверка на корректность фио
@@ -71,6 +88,7 @@ async def enter_fullname(message: types.Message, state: FSMContext, session: Asy
     answer = message.text
     await state.update_data(fullname=answer)
     data = await state.get_data()
+
     try:
         await add_user(session=session, state_data=data, user_id=message.from_user.id)
     except UserAlreadyExists:

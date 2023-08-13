@@ -17,4 +17,5 @@ async def proceed_schemas(session_pool: sessionmaker, metadata: MetaData, engine
     async with engine.begin() as conn:
         if debug:
             await conn.run_sync(metadata.drop_all)
+            pass
         await conn.run_sync(metadata.create_all)

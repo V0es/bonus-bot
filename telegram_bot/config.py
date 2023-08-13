@@ -20,6 +20,8 @@ class Config():
         self.db_name: str = self.get_variable('db_name')
         self.db_url = self._get_db_url()
         self.debug = self.validate_debug(self.get_variable('debug'))
+        self.sms_project_name: str = self.get_variable('sms_project_name')
+        self.sms_api_key: str = self.get_variable('sms_api_key')
 
     @staticmethod
     def load_env():
