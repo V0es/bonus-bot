@@ -11,7 +11,8 @@ from sqlalchemy.orm import sessionmaker
 from middlewares.database_middleware import DatabaseMiddleware
 
 from config import config
-from handlers.common import register_common_commands
+from handlers.common import register_common_handlers
+from handlers.client import register_client_handlers
 from middlewares import register_middlewares
 # from handlers import register_handlers
 
@@ -35,7 +36,8 @@ async def main() -> None:
     await proceed_schemas(session_pool, BaseModel.metadata, engine, config.debug)
 
     register_middlewares(dp, session_pool)
-    register_common_commands(dp)
+    register_common_handlers(dp, session_pool)
+    register_client_handlers(dp, session_pool)
     await dp.start_polling(bot)
 
 
