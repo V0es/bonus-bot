@@ -7,7 +7,7 @@ from .main_menu import client_main_menu
 from .account_info import account_info
 from .promotions import promotions
 
-from filters import IsAdmin, IsRegistered
+from filters import IsAdmin, IsRegistered, IsOwner
 
 from states import UserState
 
@@ -15,7 +15,8 @@ from states import UserState
 def register_client_handlers(router: Router, session_pool: sessionmaker) -> None:
     router.callback_query.register(
         client_main_menu,
-        invert_f(IsAdmin(session_pool)),
+        ~IsAdmin(session_pool),
+        ~IsOwner(session_pool),
         IsRegistered(session_pool),
         F.data == 'main_menu'
     )
