@@ -23,6 +23,10 @@ class Config():
         self.sms_project_name: str = self.get_variable('sms_project_name')
         self.sms_api_key: str = self.get_variable('sms_api_key')
         self.admin_id: str = self.get_variable('admin_id')
+        self.redis_host: str = self.get_variable('redis_host')
+        self.redis_port: str = self.get_variable('redis_port')
+        self.redis_username: str = self.get_variable('redis_username')
+        self.redis_password: str = self.get_variable('redis_password')
 
     @staticmethod
     def load_env():
@@ -42,6 +46,11 @@ class Config():
             database=self.db_name
         )
     
+    def _get_redis_url(self) -> URL:
+        return URL.create(
+
+        )
+
     @staticmethod
     def validate_debug(val: str):
         return False if val == 'False' else True
