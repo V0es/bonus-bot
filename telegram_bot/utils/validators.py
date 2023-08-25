@@ -22,8 +22,12 @@ def validate_otp_codes(valid_code: str, user_code: str) -> bool:
 
 
 def validate_fullname(fullname: str) -> bool:
+    forbidden_symbols = '[]{}+=&^:;\|/><$#@!?№%()'
+    for symbol in forbidden_symbols:
+        if symbol in fullname:
+            return False
     return True
-
+    
 
 def validate_order_amount(amount: str) -> bool:
     return amount.isdigit()
