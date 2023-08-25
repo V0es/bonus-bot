@@ -5,7 +5,7 @@ from sqlalchemy.schema import MetaData
 
 
 def create_engine(url: URL) -> AsyncEngine:
-    return create_async_engine(url, echo=True, pool_pre_ping=True)
+    return create_async_engine(url, echo=False, pool_pre_ping=True)
 
 
 def get_session_pool(engine: AsyncEngine) -> sessionmaker:
@@ -16,6 +16,6 @@ async def proceed_schemas(session_pool: sessionmaker, metadata: MetaData, engine
     
     async with engine.begin() as conn:
         if debug:
-            await conn.run_sync(metadata.drop_all)
+            # await conn.run_sync(metadata.drop_all)
             pass
         await conn.run_sync(metadata.create_all)
