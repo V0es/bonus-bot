@@ -1,6 +1,6 @@
 from aiogram import Dispatcher
 
-from .admin import add_order, export, set_account
+from .admin import add_order, export_database, set_account
 from .admin.owner import add_admin, remove_admin
 
 from .client import account_info
@@ -13,7 +13,7 @@ from states import Register
 
 def _register_admin_handlers(dp: Dispatcher):
     dp.register_message_handler(add_order, commands=['add_order'])
-    dp.register_message_handler(export, commands=['export'])
+    dp.register_message_handler(export_database, commands=['export'])
     dp.register_message_handler(set_account, commands=['set_account'])
 
 
