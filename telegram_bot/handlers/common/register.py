@@ -1,18 +1,20 @@
 from states import Register
 from keyboards import (confirm_otp_keyboard as confirm_otp_kb,
-                       get_registered_start_keyboard as reg_start_kb)
+                       get_registered_start_keyboard as reg_start_kb,
+                       get_back_to_main_menu_keyboard as back_to_mainmenu_kb)
 
-from db.requests import add_user
+from db.requests import add_user, change_email, change_phone_number
 
 from aiogram.fsm.context import FSMContext
 from aiogram import types, Router
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from exceptions import UserAlreadyExists
+from exceptions import UserAlreadyExists, UserNotFoundException
 
 from utils.otp import generate_otp
 from utils.web import sms_auth
+from utils.validators import validate_email, validate_fullname, validate_otp_codes, validate_phone_number
 
 from config import config
 
@@ -32,14 +34,13 @@ async def register(callback: types.CallbackQuery, state: FSMContext):
 @router.message()
 async def enter_phone_number(message: types.Message, state: FSMContext):  # TODO: проверка на корректность телефона
     answer = message.text
-    regexp = '^\+\d{1,3}\d{3}\d{7}$'
-    if not len(re.findall(regexp, answer)):
-        await message.answer('Вы ввели неправильный номер телефона, попробуйте ещё раз.')
+    if not validate_phone_number(answer):
+        await message.answer('Неверный формат номера телефона, попробуйте ещё раз.')
         return
     await state.update_data(phone_number=answer)
     otp_code = generate_otp()
     await state.update_data(otp_code=otp_code)
-    sms_auth.sendSMS(recipients=answer[1:], message=f'Ваш код подтверждения: {otp_code}')
+    sms_auth.sendSMS(recipients=answer[1:], message=f'{otp_code}')
     await message.answer('Введите одноразовый пароль из SMS.')
     await state.set_state(Register.confirm_otp)
     
@@ -47,7 +48,7 @@ async def enter_phone_number(message: types.Message, state: FSMContext):  # TODO
 @router.message()
 async def enter_email(message: types.Message, state: FSMContext):  # TODO: проверка на корректность почты
     answer = message.text
-    if not answer.count('@'):
+    if not validate_email(answer):
         await message.answer('Похоже, вы ввели некорректный адрес электронной почты. '
                              'Проверьте правильность введённого ранее адреса или попробуйте другой.')
         return
@@ -63,17 +64,41 @@ async def resend_otp(callback: types.CallbackQuery, state: FSMContext):
     phone_number = data.get('phone_number')
     otp_code = generate_otp()
     await state.update_data(otp_code=otp_code)
-    sms_auth.sendSMS(recipients=phone_number[1:], message=f'Ваш код подтверждения: {otp_code}')
+    sms_auth.sendSMS(recipients=phone_number[1:], message=f'{otp_code}')
     await callback.message.edit_text('Введите одноразовый пароль из SMS.')
     await state.set_state(Register.confirm_otp)
 
 
 @router.message()
-async def confirm_otp(message: types.Message, state: FSMContext):
+async def confirm_otp(message: types.Message, state: FSMContext, session: AsyncSession):
     answer = message.text
     data = await state.get_data()
     valid_code = data.get('otp_code')
     if answer == valid_code:
+        if data.get('prev_state') == 'change_email':
+            try:
+                await change_email(session, message.from_user.id, data.get('new_email'))
+            except UserNotFoundException:
+                await message.answer('Произошёл сбой, повторите попытку позже')
+                await state.clear()
+                return
+            await message.answer(f'Вы успешно сменили почту. Ваш новый email: {data.get("new_email")}', reply_markup=back_to_mainmenu_kb())
+            await state.clear()
+            return
+        elif data.get('prev_state') == 'change_phone_number':
+            try:
+                await change_phone_number(session, message.from_user.id, data.get('new_phone_number'))
+            except UserNotFoundException:
+                await message.answer('Произошёл сбой, повторите попытку позже')
+                await state.clear()
+                return
+            await message.answer(
+                f'Вы успешно сменили номер телефона. Ваш новый номер: {data.get("new_phone_number")}',
+                reply_markup=back_to_mainmenu_kb()
+                )
+            await state.clear()
+            return
+            
         await message.answer('Отлично, теперь введи почту.')
         await state.set_state(Register.enter_email)
     else:

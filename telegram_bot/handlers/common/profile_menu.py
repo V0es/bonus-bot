@@ -14,13 +14,13 @@ async def profile_menu(callback: types.CallbackQuery, state: FSMContext, session
     await state.set_state(UserState.profile_menu)
     user = await get_user_by_id(session, callback.from_user.id)
 
-    if not (user.is_admin and user.is_owner):
+    if not (user.is_admin or user.is_owner):
         role = 'Клиент'
-    elif user.is_admin and not user.is_owner:
+    elif (user.is_admin and not user.is_owner):
         role = 'Администратор'
     else:
         role = 'Владелец'
-
+  
     await callback.message.edit_text(
         f'Номер телефона: {user.phone_number}\n'
         f'Имя: {user.fullname}\n'
