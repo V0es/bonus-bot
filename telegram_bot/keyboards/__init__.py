@@ -9,3 +9,5 @@ from .profile_keyboard import get_profile_keyboard
 from .back_to_mainmenu import get_back_to_main_menu_keyboard
 
 from .confirm_otp_keyboard import confirm_otp_keyboard
+
+from .admin_keyboard import get_admin_mainmenu_keyboard
