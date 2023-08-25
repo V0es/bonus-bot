@@ -14,7 +14,6 @@ async def account_info(callback: types.CallbackQuery, session: AsyncSession):
         await callback.message.edit_text('Непредвиденный сбой. Повторите попытку позже.')
         return
     await callback.message.edit_text(
-        f'Баллы, доступные для списания: {user.bonus_points}\n'
-        f'Последнее пополнение: {user.last_scoring.strftime("%H:%M:%S %d.%m.%Y") if user.last_scoring else "пополнений пока не было"}\n',
+        f'Баллы, доступные для списания: {user.bonus_points}\n',
         reply_markup=back_kb()
     )

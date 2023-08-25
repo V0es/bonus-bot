@@ -16,7 +16,8 @@ router = Router()
 
 
 @router.callback_query()
-async def main_menu(callback: types.CallbackQuery, state: FSMContext, session: AsyncSession) -> None:
+async def client_main_menu(callback: types.CallbackQuery, state: FSMContext, session: AsyncSession) -> None:
+    await state.clear()
     await state.set_state(UserState.main_menu)
     try:
         user = await get_user_by_id(session, callback.from_user.id)

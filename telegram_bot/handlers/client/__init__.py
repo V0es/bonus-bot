@@ -1,8 +1,9 @@
 from aiogram import Router, F
+from aiogram.filters import invert_f
 
 from sqlalchemy.orm import sessionmaker
 
-from .main_menu import main_menu
+from .main_menu import client_main_menu
 from .account_info import account_info
 from .promotions import promotions
 
@@ -13,8 +14,8 @@ from states import UserState
 
 def register_client_handlers(router: Router, session_pool: sessionmaker) -> None:
     router.callback_query.register(
-        main_menu,
-        ~IsAdmin(session_pool),
+        client_main_menu,
+        invert_f(IsAdmin(session_pool)),
         IsRegistered(session_pool),
         F.data == 'main_menu'
     )
