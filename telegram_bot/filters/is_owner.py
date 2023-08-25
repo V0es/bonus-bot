@@ -15,10 +15,6 @@ class IsOwner(Filter):
     async def __call__(self, event: Message | CallbackQuery) -> bool:
         async with self.session_pool() as session:
             try:
-                if isinstance(event, Message):
-                    return await is_owner(session, event.from_user.id)
-                else:
-                    return await is_owner(session, event.message.from_user.id)
-
+                return await is_owner(session, event.from_user.id)
             except UserNotFoundException:
                 return False
