@@ -11,7 +11,7 @@ from .register import register, enter_fullname, enter_email, enter_phone_number,
 from .start import start_registered, start_unregistered
 from .profile_menu import profile_menu
 
-from states import Register, UserState, AdminState
+from states import Register, UserState, AdminState, OwnerState
 from filters import IsRegistered
 
 
@@ -35,7 +35,11 @@ def register_common_handlers(router: Router, session_pool: sessionmaker) -> None
         profile_menu,
         IsRegistered(session_pool),
         F.data == 'profile_menu',
-        or_f(UserState.main_menu, AdminState.main_menu))
+        or_f(
+            UserState.main_menu,
+            AdminState.main_menu,
+            OwnerState.main_menu
+        ))
 
     router.callback_query.register(register, F.data == 'register')
     router.callback_query.register(resend_otp, Register.resend_otp)
