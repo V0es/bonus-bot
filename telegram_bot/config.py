@@ -22,6 +22,7 @@ class Config():
         self.debug = self.validate_debug(self.get_variable('debug'))
         self.sms_project_name: str = self.get_variable('sms_project_name')
         self.sms_api_key: str = self.get_variable('sms_api_key')
+        self.admin_id: str = self.get_variable('admin_id')
 
     @staticmethod
     def load_env():
