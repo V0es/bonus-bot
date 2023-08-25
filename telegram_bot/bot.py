@@ -2,11 +2,13 @@ import logging
 import asyncio
 
 from aiogram import Bot, Dispatcher
-from aiogram.fsm.storage.memory import MemoryStorage
+from aiogram.fsm.storage.redis import RedisStorage
 from aiogram.enums import ParseMode
 
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
+
+from aioredis import Redis
 
 from middlewares.database_middleware import DatabaseMiddleware
 from middlewares.bot_middleware import BotMiddleware
@@ -15,6 +17,7 @@ from config import config
 from handlers.common import register_common_handlers
 from handlers.client import register_client_handlers
 from handlers.admin import register_admin_handlers
+from handlers.admin.owner import register_owner_handlers
 from middlewares import register_middlewares
 # from handlers import register_handlers
 
@@ -26,7 +29,8 @@ logging.basicConfig(level=logging.DEBUG)
 
 
 async def main() -> None:
-    storage = MemoryStorage()  # switch to Redis or Mongo
+    redis = Redis()
+    storage = RedisStorage(redis=redis)  # switch to Redis or Mongo
     # Initialize bot and dispatcher
     dp = Dispatcher(storage=storage)
     bot = Bot(token=config.bot_token, parse_mode=ParseMode.HTML)
@@ -39,8 +43,10 @@ async def main() -> None:
 
     register_middlewares(dp, session_pool, bot)
     register_common_handlers(dp, session_pool)
-    register_admin_handlers(dp, session_pool)
     register_client_handlers(dp, session_pool)
+    register_admin_handlers(dp, session_pool)
+    register_owner_handlers(dp, session_pool)
+    
     await dp.start_polling(bot)
 
 
