@@ -1,6 +1,25 @@
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
-# kb1 = InlineKeyboardButton('кнопка1', callback_data='1')
-# kb2 = InlineKeyboardButton('кнопка2', callback_data='2')
 
-# kbm = InlineKeyboardMarkup(row_width=1, inline_keyboard=[[kb1, kb2]])
+def get_owner_mainmenu_keyboard() -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup(row_width=1, inline_keyboard=[
+        [
+            InlineKeyboardButton(text='Мой профиль', callback_data='profile_menu'),
+        ],
+        [
+            InlineKeyboardButton(text='Добавить заказ', callback_data='add_order'),
+        ],
+        [
+            InlineKeyboardButton(text='Изменить баллы', callback_data='set_account'),
+        ],
+        [
+            InlineKeyboardButton(text='Экспорт в Excel', callback_data='export'),
+        ],
+        [
+            InlineKeyboardButton(text='Добавить админа', callback_data='add_admin'),
+        ],
+        [
+            InlineKeyboardButton(text='Удалить админа', callback_data='remove_admin')
+        ]
+        
+    ])
