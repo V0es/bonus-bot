@@ -38,7 +38,6 @@ async def get_user_by_phone_number(session: AsyncSession, phone_number: str) -> 
 async def get_user_by_id(session: AsyncSession, user_id: int) -> User:
     result = await session.execute(select(User).where(User.user_id == user_id))
     user = result.scalar_one_or_none()
-    print('USER: ', user, ' USER_ID: ', user_id)
     if not user:
         raise UserNotFoundException
     return user
@@ -80,3 +79,27 @@ async def is_admin(session: AsyncSession, user_id: int) -> bool:
 async def is_owner(session: AsyncSession, user_id: int) -> bool:
     user = await get_user_by_id(session, user_id)
     return user.is_owner
+
+
+async def change_email(session: AsyncSession, user_id: str, new_email: str) -> None:
+    user = await get_user_by_id(session, user_id)
+    await session.execute(update(User).where(User == user).values({User.email: new_email}))
+    await session.commit()
+
+
+async def change_fullname(session: AsyncSession, user_id: str, new_fullname: str) -> None:
+    user = await get_user_by_id(session, user_id)
+    await session.execute(update(User).where(User == user).values({User.fullname: new_fullname}))
+    await session.commit()
+
+
+async def change_phone_number(session: AsyncSession, user_id: str, new_phone_number: str) -> None:
+    user = await get_user_by_id(session, user_id)
+    await session.execute(update(User).where(User == user).values({User.phone_number: new_phone_number}))
+    await session.commit()
+
+
+async def change_bonus_points(session: AsyncSession, recipient_phone_number: str, new_account: int) -> None:
+    user = await get_user_by_phone_number(session, recipient_phone_number)
+    await session.execute(update(User).where(User == user).values({User.bonus_points: new_account}))
+    await session.commit()
