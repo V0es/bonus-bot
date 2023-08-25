@@ -45,6 +45,7 @@ async def enter_customer_number(message: types.Message, state: FSMContext, sessi
             'Не найден пользователь с таким номером телефона, проверьте номер и попробуйте ещё раз.',
             reply_markup=back_to_mainmenu_kb()
             )
+        return
     await state.update_data(recipient_phone_number=user.phone_number)
     data = await state.get_data()
     prev_state = data['prev_state']

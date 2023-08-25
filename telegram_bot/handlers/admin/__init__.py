@@ -1,9 +1,10 @@
 from aiogram import Router, F
 from sqlalchemy.orm import sessionmaker
+from aiogram.filters import or_f
 
-from filters import IsAdmin, IsRegistered
+from filters import IsAdmin, IsRegistered, IsOwner
 
-from states import AdminState
+from states import AdminState, OwnerState
 
 from .owner import add_admin
 from .owner import remove_admin
@@ -19,6 +20,7 @@ def register_admin_handlers(router: Router, session_pool: sessionmaker) -> None:
     router.callback_query.register(
         admin_main_menu,
         IsAdmin(session_pool),
+        ~IsOwner(session_pool),
         IsRegistered(session_pool),
         F.data == 'main_menu'
     )
@@ -27,7 +29,10 @@ def register_admin_handlers(router: Router, session_pool: sessionmaker) -> None:
         add_order,
         IsRegistered(session_pool),
         IsAdmin(session_pool),
-        AdminState.main_menu,
+        or_f(
+            AdminState.main_menu,
+            OwnerState.main_menu
+        ),
         F.data == 'add_order'
     )
 
@@ -49,7 +54,10 @@ def register_admin_handlers(router: Router, session_pool: sessionmaker) -> None:
         export_database,
         IsRegistered(session_pool),
         IsAdmin(session_pool),
-        AdminState.main_menu,
+        or_f(
+            AdminState.main_menu,
+            OwnerState.main_menu
+        ),
         F.data == 'export'
     )
 
@@ -57,7 +65,10 @@ def register_admin_handlers(router: Router, session_pool: sessionmaker) -> None:
         set_account,
         IsRegistered(session_pool),
         IsAdmin(session_pool),
-        AdminState.main_menu,
+        or_f(
+            AdminState.main_menu,
+            OwnerState.main_menu
+            ),
         F.data == 'set_account'
     )
 
