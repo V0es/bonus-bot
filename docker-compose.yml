@@ -7,6 +7,8 @@ services:
       - redis-server
     env_file:
       - ./.env
+    volumes:
+      - redisdata:/data
     restart: on-failure
     ports:
       - "6379:6379"
@@ -19,12 +21,12 @@ services:
       - pgdata:/var/lib/postgresql/data
     restart: on-failure
     ports:
-      - "5432"
+      - "5432:5432"
   
   bot:
     build: .
     command: sh -c "python telegram_bot/bot.py"
-    env_file: .env
+    env_file: ./.env
     restart: always
     depends_on:
       - db
@@ -34,3 +36,4 @@ services:
 
 volumes:
   pgdata:
+  redisdata:
