@@ -12,6 +12,7 @@ class Config():
     def __init__(self) -> None:
         self.load_env()
         self.bot_token: str = self.get_variable('bot_token')
+        print(self.bot_token)
         self.bot_fsm_storage: str = self.get_variable('bot_fsm_storage')
         self.pg_user: str = self.get_variable('POSTGRES_USERNAME')
         self.pg_pass: str | None = self.get_variable('POSTGRES_PASSWORD')
