@@ -4,6 +4,7 @@ import asyncio
 from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.redis import RedisStorage
 from aiogram.enums import ParseMode
+from aiogram.utils.token import TokenValidationError
 
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
@@ -39,7 +40,12 @@ async def main() -> None:
     storage = RedisStorage(redis=redis)  # switch to Redis or Mongo
     # Initialize bot and dispatcher
     dp = Dispatcher(storage=storage)
-    bot = Bot(token=config.bot_token, parse_mode=ParseMode.HTML)
+    
+    try:
+        bot = Bot(token=config.bot_token, parse_mode=ParseMode.HTML)
+    except TokenValidationError:
+        pass
+    
     await bot.delete_webhook(drop_pending_updates=True)
     
     engine = create_engine(config.db_url)

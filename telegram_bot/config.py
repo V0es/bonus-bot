@@ -30,7 +30,7 @@ class Config():
 
     @staticmethod
     def load_env():
-        load_dotenv('.env')
+        load_dotenv()
     
     @staticmethod
     def get_variable(key: str) -> str:

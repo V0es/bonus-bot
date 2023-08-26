@@ -14,7 +14,7 @@ services:
   db:
     image: postgres:15
     env_file:
-      - .env
+      - ./.env
     volumes:
       - pgdata:/var/lib/postgresql/data
     restart: on-failure
@@ -24,8 +24,7 @@ services:
   bot:
     build: .
     command: sh -c "python telegram_bot/bot.py"
-    env_file:
-      - ./.env
+    env_file: .env
     restart: always
     depends_on:
       - db
