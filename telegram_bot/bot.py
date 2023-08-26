@@ -29,7 +29,13 @@ logging.basicConfig(level=logging.DEBUG)
 
 
 async def main() -> None:
-    redis = Redis()
+    redis = Redis(
+        host=config.redis_host,
+        port=config.redis_port,
+        username=config.redis_username or None,
+        password=config.redis_password or None
+    )
+    
     storage = RedisStorage(redis=redis)  # switch to Redis or Mongo
     # Initialize bot and dispatcher
     dp = Dispatcher(storage=storage)
