@@ -6,7 +6,7 @@ services:
     command:
       - redis-server
     env_file:
-      - .env
+      - ./.env
     restart: on-failure
     ports:
       - "6379:6379"
@@ -25,7 +25,7 @@ services:
     build: .
     command: sh -c "python telegram_bot/bot.py"
     env_file:
-      - .env
+      - ./.env
     restart: always
     depends_on:
       - db
