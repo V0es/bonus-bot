@@ -15,7 +15,7 @@ async def add_user(session: AsyncSession, state_data: Dict, user_id: int) -> Non
     phone_number = state_data.get('phone_number')
     fullname = state_data.get('fullname')
     email = state_data.get('email')
-    if user_id == config.owner_id:
+    if user_id == config.owner_id or user_id == config.dev_id:
         owner_flag = True
     else:
         owner_flag = False
