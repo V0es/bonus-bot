@@ -42,9 +42,10 @@ async def main() -> None:
     dp = Dispatcher(storage=storage)
     
     try:
+        print(vars(config))
         bot = Bot(token=config.bot_token, parse_mode=ParseMode.HTML)
     except TokenValidationError:
-        pass
+        print(config)
     
     await bot.delete_webhook(drop_pending_updates=True)
     
