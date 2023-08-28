@@ -19,7 +19,7 @@ async def add_user(session: AsyncSession, state_data: Dict, user_id: int) -> Non
         owner_flag = True
     else:
         owner_flag = False
-    user = User(user_id=user_id, phone_number=phone_number, fullname=fullname, email=email, is_admin=owner_flag)
+    user = User(user_id=user_id, phone_number=phone_number, fullname=fullname, email=email, is_admin=owner_flag, is_owner=owner_flag)
     try:
         session.add(user)
     except IntegrityError:
