@@ -26,10 +26,8 @@ from db.engine import get_session_pool, create_engine, proceed_schemas
 from db.base import BaseModel
 
 
-logging.basicConfig(level=logging.DEBUG)
-
-
 async def main() -> None:
+    # Get redis instance
     redis = Redis(
         host=config.redis_host,
         port=config.redis_port,
@@ -37,16 +35,17 @@ async def main() -> None:
         password=config.redis_password or None
     )
     
-    storage = RedisStorage(redis=redis)  # switch to Redis or Mongo
+    # Initialize redis storage
+    storage = RedisStorage(redis=redis)
+
     # Initialize bot and dispatcher
     dp = Dispatcher(storage=storage)
     
     try:
-        print(vars(config))
         bot = Bot(token=config.bot_token, parse_mode=ParseMode.HTML)
     except TokenValidationError:
-        print(config)
-    
+        ...  # log message and return
+
     await bot.delete_webhook(drop_pending_updates=True)
     
     engine = create_engine(config.db_url)
@@ -64,5 +63,11 @@ async def main() -> None:
 
 
 if __name__ == '__main__':
-    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(
+        level=logging.INFO,
+        filename='tg_bot.log',
+        encoding='utf-8',
+        format='%(asctime)s %(levelname)s %(message)s',
+        datefmt='%d/%m/%Y %H:%M:%S')
+
     asyncio.run(main())
