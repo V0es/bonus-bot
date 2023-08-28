@@ -21,4 +21,4 @@ async def proceed_schemas(session_pool: sessionmaker, metadata: MetaData, engine
             # await conn.run_sync(metadata.drop_all)
             pass
         await conn.run_sync(metadata.create_all)
-    logging.INFO('Schemas proceeded')
+    # logging.INFO('Schemas proceeded')
