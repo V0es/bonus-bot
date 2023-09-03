@@ -152,8 +152,11 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 
-#Other files
+# Other files
 tz.txt
+
+# Pychram files
+.idea
 
 
 # PyCharm
