@@ -1,50 +1,50 @@
 import logging
 import asyncio
+from aioredis import Redis
 
 from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.redis import RedisStorage
+from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.enums import ParseMode
 from aiogram.utils.token import TokenValidationError
 
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
-from sqlalchemy.orm import sessionmaker
+from .config import config
+from telegram_bot.handlers.common import register_common_handlers
+from telegram_bot.handlers.client import register_client_handlers
+from telegram_bot.handlers.admin import register_admin_handlers
+from telegram_bot.handlers.admin.owner import register_owner_handlers
+from telegram_bot.middlewares import register_middlewares
 
-from aioredis import Redis
-
-from middlewares.database_middleware import DatabaseMiddleware
-from middlewares.bot_middleware import BotMiddleware
-
-from config import config
-from handlers.common import register_common_handlers
-from handlers.client import register_client_handlers
-from handlers.admin import register_admin_handlers
-from handlers.admin.owner import register_owner_handlers
-from middlewares import register_middlewares
-# from handlers import register_handlers
-
-from db.engine import get_session_pool, create_engine, proceed_schemas
-from db.base import BaseModel
+from .db.engine import get_session_pool, create_engine, proceed_schemas
+from .db.base import BaseModel
 
 
 async def main() -> None:
     # Get redis instance
-    redis = Redis(
-        host=config.redis_host,
-        port=config.redis_port,
-        username=config.redis_username or None,
-        password=config.redis_password or None
-    )
+    if config.bot_fsm_storage == 'memory':
+        # Initialize memory storage
+        storage = MemoryStorage()
     
-    # Initialize redis storage
-    storage = RedisStorage(redis=redis)
-
+    elif config.bot_fsm_storage == 'redis':
+        redis = Redis(
+            host=config.redis_host,
+            port=config.redis_port,
+            username=config.redis_username or None,
+            password=config.redis_password or None
+        )
+        # Initialize redis storage
+        storage = RedisStorage(redis=redis)
+    else:
+        logging.critical('FSM storage type is not specified or not supported')
+        return
     # Initialize bot and dispatcher
     dp = Dispatcher(storage=storage)
     
     try:
         bot = Bot(token=config.bot_token, parse_mode=ParseMode.HTML)
     except TokenValidationError:
-        ...  # log message and return
+        logging.critical('Telegram bot token is invalid, unable to start bot')  # log message and return
+        return
 
     await bot.delete_webhook(drop_pending_updates=True)
     

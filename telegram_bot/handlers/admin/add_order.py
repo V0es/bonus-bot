@@ -3,15 +3,15 @@ from aiogram.fsm.context import FSMContext
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from states import AdminState
+from telegram_bot.states import AdminState
 
-from utils.validators import validate_phone_number, validate_order_amount
+from telegram_bot.utils.validators import validate_phone_number, validate_order_amount
 
-from db.requests import get_user_by_phone_number, add_bonus_points
+from telegram_bot.db.requests import get_user_by_phone_number, add_bonus_points
 
-from exceptions import UserNotFoundException
+from telegram_bot.exceptions import UserNotFoundException
 
-from keyboards import get_back_to_main_menu_keyboard as back_to_mainmenu_kb
+from telegram_bot.keyboards import get_back_to_main_menu_keyboard as back_to_mainmenu_kb
 
 router = Router()
 

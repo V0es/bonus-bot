@@ -1,6 +1,6 @@
 from aiogram import types
 
-from keyboards import get_back_to_main_menu_keyboard as back_kb
+from telegram_bot.keyboards import get_back_to_main_menu_keyboard as back_kb
 
 
 async def promotions(callback: types.CallbackQuery):

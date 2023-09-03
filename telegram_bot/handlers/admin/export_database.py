@@ -2,9 +2,9 @@ from aiogram import types, Router
 from sqlalchemy.ext.asyncio import AsyncSession
 from aiogram.fsm.context import FSMContext
 
-from utils.export import DBExport
-from keyboards import get_back_to_main_menu_keyboard as back_to_mainmenu_kb
-from states import AdminState
+from telegram_bot.utils.export import DBExport
+from telegram_bot.keyboards import get_back_to_main_menu_keyboard as back_to_mainmenu_kb
+from telegram_bot.states import AdminState
 
 router = Router()
 

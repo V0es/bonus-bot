@@ -1,13 +1,13 @@
-from aiogram import Router, types
+from aiogram import types
 from aiogram.fsm.context import FSMContext
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from states import UserState
+from telegram_bot.states import UserState
 
-from db.requests import get_user_by_id
+from telegram_bot.db.requests import get_user_by_id
 
-from keyboards import get_profile_keyboard as get_profile_kb
+from telegram_bot.keyboards import get_profile_keyboard as get_profile_kb
 
 
 async def profile_menu(callback: types.CallbackQuery, state: FSMContext, session: AsyncSession):

@@ -2,9 +2,9 @@ from aiogram import Router, F
 from sqlalchemy.orm import sessionmaker
 from aiogram.filters import or_f
 
-from filters import IsAdmin, IsRegistered, IsOwner
+from telegram_bot.filters import IsAdmin, IsRegistered, IsOwner
 
-from states import AdminState, OwnerState
+from telegram_bot.states import AdminState, OwnerState
 
 from .owner import add_admin
 from .owner import remove_admin

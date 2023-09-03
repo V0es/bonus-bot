@@ -1,9 +1,9 @@
-from states import Register
-from keyboards import (confirm_otp_keyboard as confirm_otp_kb,
-                       get_registered_start_keyboard as reg_start_kb,
-                       get_back_to_main_menu_keyboard as back_to_mainmenu_kb)
+from telegram_bot.states import Register
+from telegram_bot.keyboards import (confirm_otp_keyboard as confirm_otp_kb,
+                                    get_registered_start_keyboard as reg_start_kb,
+                                    get_back_to_main_menu_keyboard as back_to_mainmenu_kb)
 
-from db.requests import add_user, change_email, change_phone_number
+from telegram_bot.db.requests import add_user, change_email, change_phone_number
 
 from aiogram.fsm.context import FSMContext
 from aiogram import types, Router
@@ -11,29 +11,27 @@ from aiogram import types, Router
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError
 
-from exceptions import UserAlreadyExists, UserNotFoundException
+from telegram_bot.exceptions import UserAlreadyExists, UserNotFoundException
 
-from utils.otp import generate_otp
-from utils.web import sms_auth
-from utils.validators import validate_email, validate_fullname, validate_otp_codes, validate_phone_number
+from telegram_bot.utils.otp import generate_otp
+from telegram_bot.utils.web import sms_auth
+from telegram_bot.utils.validators import validate_email, validate_fullname, validate_otp_codes, validate_phone_number
 
-from config import config
-
-import re
 
 router = Router()
 
 
-# TODO: register state with FSM
 @router.callback_query()
 async def register(callback: types.CallbackQuery, state: FSMContext):
-    await callback.message.edit_text('Вы вошли в регистрацию, введи свой номер телефона, в указанном виде, например, +79991234567')
+    await callback.message.edit_text(
+        'Вы вошли в регистрацию, введи свой номер телефона, в указанном виде, например, +79991234567'
+    )
     await state.set_state(Register.enter_phone_number)
     await callback.answer()
 
 
 @router.message()
-async def enter_phone_number(message: types.Message, state: FSMContext):  # TODO: проверка на корректность телефона
+async def enter_phone_number(message: types.Message, state: FSMContext):
     answer = message.text
     if not validate_phone_number(answer):
         await message.answer('Неверный формат номера телефона, попробуйте ещё раз.')
@@ -47,7 +45,7 @@ async def enter_phone_number(message: types.Message, state: FSMContext):  # TODO
         'Для подтверждения введите полученный пароль'
     )
     await state.set_state(Register.confirm_otp)
-    
+
 
 @router.message()
 async def enter_email(message: types.Message, state: FSMContext):  # TODO: проверка на корректность почты
@@ -59,7 +57,7 @@ async def enter_email(message: types.Message, state: FSMContext):  # TODO: пр�
     await state.update_data(email=answer)
     await message.answer('Введите, пожалуйста, ваши имя и фамилию для профиля. Например, Иван Иванов')
     await state.set_state(Register.enter_fullname)
-    
+
 
 @router.callback_query()
 async def resend_otp(callback: types.CallbackQuery, state: FSMContext):
@@ -95,7 +93,8 @@ async def confirm_otp(message: types.Message, state: FSMContext, session: AsyncS
                     reply_markup=back_to_mainmenu_kb())
                 await state.clear()
                 return
-            await message.answer(f'Вы успешно сменили почту. Ваш новый email: {data.get("new_email")}', reply_markup=back_to_mainmenu_kb())
+            await message.answer(f'Вы успешно сменили почту. Ваш новый email: {data.get("new_email")}',
+                                 reply_markup=back_to_mainmenu_kb())
             await state.clear()
             return
 
@@ -118,13 +117,13 @@ async def confirm_otp(message: types.Message, state: FSMContext, session: AsyncS
             await message.answer(
                 f'Вы успешно сменили номер телефона. Ваш новый номер: {data.get("new_phone_number")}',
                 reply_markup=back_to_mainmenu_kb()
-                )
+            )
             await state.clear()
             return
-            
+
         await message.answer('Отлично, теперь введи почту.')
         await state.set_state(Register.enter_email)
-        
+
     else:  # if user entered invalid otp
         await state.update_data(otp_code=None)  # this otp is no longer available
         await state.set_state(Register.resend_otp)
@@ -132,7 +131,8 @@ async def confirm_otp(message: types.Message, state: FSMContext, session: AsyncS
 
 
 @router.message()
-async def enter_fullname(message: types.Message, state: FSMContext, session: AsyncSession):  # TODO: проверка на корректность фио
+async def enter_fullname(message: types.Message, state: FSMContext,
+                         session: AsyncSession):  # TODO: проверка на корректность фио
     # print('ENTER FULLNAME HANDLER! SESSION: ', session)
     answer = message.text
     await state.update_data(fullname=answer)
@@ -146,4 +146,3 @@ async def enter_fullname(message: types.Message, state: FSMContext, session: Asy
         return
     await state.clear()
     await message.answer('Отлично, регистрация завершена.', reply_markup=reg_start_kb())
-        

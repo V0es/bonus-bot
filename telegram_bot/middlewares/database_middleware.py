@@ -5,7 +5,7 @@ from sqlalchemy.orm import sessionmaker
 from aiogram import BaseMiddleware
 from aiogram.types import Message, TelegramObject, CallbackQuery
 
-from db.requests import get_user_by_id
+from telegram_bot.db.requests import get_user_by_id
 
 
 class DatabaseMiddleware(BaseMiddleware):

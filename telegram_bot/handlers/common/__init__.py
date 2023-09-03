@@ -6,13 +6,12 @@ from sqlalchemy.orm import sessionmaker
 from .change_email import change_email, enter_new_email
 from .change_phone import change_phone, enter_new_phone
 from .change_fullname import change_fullname, enter_new_fullname
-from .login import login
 from .register import register, enter_fullname, enter_email, enter_phone_number, resend_otp, confirm_otp
 from .start import start_registered, start_unregistered
 from .profile_menu import profile_menu
 
-from states import Register, UserState, AdminState, OwnerState
-from filters import IsRegistered
+from telegram_bot.filters import IsRegistered
+from telegram_bot.states import Register, UserState, AdminState, OwnerState
 
 
 def register_common_handlers(router: Router, session_pool: sessionmaker) -> None:

@@ -2,12 +2,12 @@ from aiogram import types
 from aiogram.fsm.context import FSMContext
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from keyboards import get_back_to_main_menu_keyboard as back_to_mainmenu_kb
-from utils.validators import validate_order_amount
-from db.requests import change_bonus_points
-from exceptions import UserNotFoundException
+from telegram_bot.keyboards import get_back_to_main_menu_keyboard as back_to_mainmenu_kb
+from telegram_bot.utils.validators import validate_order_amount
+from telegram_bot.db.requests import change_bonus_points
+from telegram_bot.exceptions import UserNotFoundException
 
-from states import AdminState
+from telegram_bot.states import AdminState
 
 
 async def set_account(callback: types.CallbackQuery, state: FSMContext):

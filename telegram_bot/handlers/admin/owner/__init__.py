@@ -7,8 +7,8 @@ from .remove_admin import remove_admin
 from .main_menu import owner_main_menu
 from .enter_admin_phone import enter_admin_phone
 
-from filters import IsOwner, IsRegistered
-from states import OwnerState
+from telegram_bot.filters import IsOwner, IsRegistered
+from telegram_bot.states import OwnerState
 
 
 def register_owner_handlers(router: Router, session_pool: sessionmaker):

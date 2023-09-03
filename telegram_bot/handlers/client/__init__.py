@@ -7,9 +7,9 @@ from .main_menu import client_main_menu
 from .account_info import account_info
 from .promotions import promotions
 
-from filters import IsAdmin, IsRegistered, IsOwner
+from telegram_bot.filters import IsAdmin, IsRegistered, IsOwner
 
-from states import UserState
+from telegram_bot.states import UserState
 
 
 def register_client_handlers(router: Router, session_pool: sessionmaker) -> None:
@@ -28,7 +28,7 @@ def register_client_handlers(router: Router, session_pool: sessionmaker) -> None
         F.data == 'account_info'
     )
 
-    router.callback_query.register(  # move text to sepatate file and add filter for admins
+    router.callback_query.register(  # move text to separate file
         promotions,
         IsRegistered(session_pool),
         UserState.main_menu,

@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from aiogram.types import FSInputFile
 import datetime
 
-from db.requests import get_all_users
+from telegram_bot.db.requests import get_all_users
 
 
 class DBExport:

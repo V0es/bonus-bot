@@ -2,11 +2,11 @@ from aiogram import types, Bot
 from aiogram.fsm.context import FSMContext
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from keyboards import get_back_to_main_menu_keyboard as back_to_mainmenu_kb
-from utils.validators import validate_phone_number
-from exceptions import UserNotFoundException
-from db.requests import get_user_by_phone_number, is_admin, set_admin, remove_admin
-from states import OwnerState
+from telegram_bot.keyboards import get_back_to_main_menu_keyboard as back_to_mainmenu_kb
+from telegram_bot.utils.validators import validate_phone_number
+from telegram_bot.exceptions import UserNotFoundException
+from telegram_bot.db.requests import get_user_by_phone_number, is_admin, set_admin, remove_admin
+from telegram_bot.states import OwnerState
 
 
 async def enter_admin_phone(message: types.Message, state: FSMContext, session: AsyncSession, bot: Bot):

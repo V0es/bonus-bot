@@ -1,11 +1,10 @@
 from sqlalchemy import create_engine, String, ForeignKey, BigInteger, DateTime, Boolean
 
-from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import as_declarative, Mapped, mapped_column, Session, declared_attr
 
 from sqlalchemy.sql.functions import current_timestamp
 
-from db.base import BaseModel
+from telegram_bot.db.base import BaseModel
 
 
 class User(BaseModel):

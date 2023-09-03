@@ -4,11 +4,11 @@ from sqlalchemy.exc import IntegrityError
 
 from typing import List, Dict
 
-from db.models import User
+from telegram_bot.db.models import User
 
-from config import config
+from telegram_bot.config import config
 
-from exceptions import UserNotFoundException, UserAlreadyExists
+from telegram_bot.exceptions import UserNotFoundException, UserAlreadyExists
 
 
 async def add_user(session: AsyncSession, state_data: Dict, user_id: int) -> None:
