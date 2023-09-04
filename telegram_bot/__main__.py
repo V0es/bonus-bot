@@ -8,15 +8,16 @@ from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.enums import ParseMode
 from aiogram.utils.token import TokenValidationError
 
-from .config import config
+from telegram_bot.config import config
+
 from telegram_bot.handlers.common import register_common_handlers
 from telegram_bot.handlers.client import register_client_handlers
 from telegram_bot.handlers.admin import register_admin_handlers
 from telegram_bot.handlers.admin.owner import register_owner_handlers
 from telegram_bot.middlewares import register_middlewares
 
-from .db.engine import get_session_pool, create_engine, proceed_schemas
-from .db.base import BaseModel
+from telegram_bot.db.engine import get_session_pool, create_engine, proceed_schemas
+from telegram_bot.db.base import BaseModel
 
 
 async def main() -> None:

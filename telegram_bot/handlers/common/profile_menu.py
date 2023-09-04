@@ -16,7 +16,7 @@ async def profile_menu(callback: types.CallbackQuery, state: FSMContext, session
 
     if not (user.is_admin or user.is_owner):
         role = 'Клиент'
-    elif (user.is_admin and not user.is_owner):
+    elif user.is_admin and not user.is_owner:
         role = 'Администратор'
     else:
         role = 'Владелец'

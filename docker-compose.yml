@@ -26,7 +26,7 @@ services:
   
   bot:
     build: .
-    command: sh -c "python telegram_bot/bot.py"
+    command: sh -c "python -m telegram_bot"
     env_file: .env
     restart: always
     depends_on:

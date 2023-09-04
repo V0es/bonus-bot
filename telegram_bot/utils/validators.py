@@ -27,7 +27,7 @@ def validate_fullname(fullname: str) -> bool:
         if symbol in fullname:
             return False
     return True
-    
+
 
 def validate_order_amount(amount: str) -> bool:
     return amount.isdigit()

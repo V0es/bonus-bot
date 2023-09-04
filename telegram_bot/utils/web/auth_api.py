@@ -47,7 +47,7 @@ class AuthAPI:
 		#print r.url		# Когда что-то идёт не по плану, можно посмотреть GET запрос (через браузер)
 		#r = requests.post(self.url+url, headers=self.headers, data=rqData)	#POST работал только с одиночными SMS
 		
-		print(r.text)
+		#print(r.text)
 		
 		ansver = json.loads(r.text)
 		return ansver				

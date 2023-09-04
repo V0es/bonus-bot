@@ -32,6 +32,9 @@ async def register(callback: types.CallbackQuery, state: FSMContext):
 
 @router.message()
 async def enter_phone_number(message: types.Message, state: FSMContext):
+    """
+    Handler for getting user phone number
+    """
     answer = message.text
     if not validate_phone_number(answer):
         await message.answer('Неверный формат номера телефона, попробуйте ещё раз.')
@@ -61,7 +64,8 @@ async def enter_email(message: types.Message, state: FSMContext):  # TODO: пр�
 
 @router.callback_query()
 async def resend_otp(callback: types.CallbackQuery, state: FSMContext):
-    # TODO: do some stuff to resend otp and check failed attempts
+    # TODO: check failed attempts
+
     data = await state.get_data()
     phone_number = data.get('phone_number')
     otp_code = generate_otp()
@@ -133,8 +137,13 @@ async def confirm_otp(message: types.Message, state: FSMContext, session: AsyncS
 @router.message()
 async def enter_fullname(message: types.Message, state: FSMContext,
                          session: AsyncSession):  # TODO: проверка на корректность фио
-    # print('ENTER FULLNAME HANDLER! SESSION: ', session)
     answer = message.text
+    if not validate_fullname(answer):
+        await message.answer(
+            'Недоступные символы в имени, попробуйте ещё раз.',
+            reply_markup=back_to_mainmenu_kb()
+        )
+        return
     await state.update_data(fullname=answer)
     data = await state.get_data()
 

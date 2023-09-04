@@ -1,6 +1,7 @@
 from aiogram import Router, F
 from aiogram.filters import CommandStart, or_f
 
+
 from sqlalchemy.orm import sessionmaker
 
 from .change_email import change_email, enter_new_email
@@ -26,9 +27,23 @@ def register_common_handlers(router: Router, session_pool: sessionmaker) -> None
     router.message.register(enter_new_fullname, IsRegistered(session_pool), UserState.change_fullname)
     router.message.register(enter_new_phone, IsRegistered(session_pool), UserState.change_phone_number)
 
-    router.callback_query.register(change_phone, IsRegistered(session_pool), F.data == 'change_phone_number', UserState.profile_menu)
-    router.callback_query.register(change_fullname, IsRegistered(session_pool), F.data == 'change_fullname', UserState.profile_menu)
-    router.callback_query.register(change_email, IsRegistered(session_pool), F.data == 'change_email', UserState.profile_menu)
+    router.callback_query.register(
+        change_phone,
+        IsRegistered(session_pool),
+        F.data == 'change_phone_number',
+        UserState.profile_menu)
+
+    router.callback_query.register(
+        change_fullname,
+        IsRegistered(session_pool),
+        F.data == 'change_fullname',
+        UserState.profile_menu)
+
+    router.callback_query.register(
+        change_email,
+        IsRegistered(session_pool),
+        F.data == 'change_email',
+        UserState.profile_menu)
 
     router.callback_query.register(
         profile_menu,

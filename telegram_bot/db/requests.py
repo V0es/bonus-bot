@@ -2,7 +2,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, update, delete
 from sqlalchemy.exc import IntegrityError
 
-from typing import List, Dict
+from typing import List, Dict, Sequence
 
 from telegram_bot.db.models import User
 
@@ -28,7 +28,7 @@ async def add_user(session: AsyncSession, state_data: Dict, user_id: int) -> Non
     await session.commit()
 
 
-async def get_all_users(session: AsyncSession) -> List[User]:
+async def get_all_users(session: AsyncSession) -> Sequence[User]:
     result = await session.execute(select(User))
     return result.scalars().all()
 
@@ -51,7 +51,9 @@ async def get_user_by_id(session: AsyncSession, user_id: int) -> User:
 
 async def add_bonus_points(session: AsyncSession, bonus_points_to_add: int, phone_number: str) -> None:
     user = await get_user_by_phone_number(session, phone_number)
-    await session.execute(update(User).where(User == user).values({User.bonus_points: User.bonus_points + bonus_points_to_add}))
+    await session.execute(
+        update(User).where(User == user).values({User.bonus_points: User.bonus_points + bonus_points_to_add})
+    )
     await session.commit()
 
 
@@ -87,19 +89,19 @@ async def is_owner(session: AsyncSession, user_id: int) -> bool:
     return user.is_owner
 
 
-async def change_email(session: AsyncSession, user_id: str, new_email: str) -> None:
+async def change_email(session: AsyncSession, user_id: int, new_email: str) -> None:
     user = await get_user_by_id(session, user_id)
     await session.execute(update(User).where(User == user).values({User.email: new_email}))
     await session.commit()
 
 
-async def change_fullname(session: AsyncSession, user_id: str, new_fullname: str) -> None:
+async def change_fullname(session: AsyncSession, user_id: int, new_fullname: str) -> None:
     user = await get_user_by_id(session, user_id)
     await session.execute(update(User).where(User == user).values({User.fullname: new_fullname}))
     await session.commit()
 
 
-async def change_phone_number(session: AsyncSession, user_id: str, new_phone_number: str) -> None:
+async def change_phone_number(session: AsyncSession, user_id: int, new_phone_number: str) -> None:
     user = await get_user_by_id(session, user_id)
     await session.execute(update(User).where(User == user).values({User.phone_number: new_phone_number}))
     await session.commit()
