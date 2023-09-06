@@ -4,8 +4,8 @@ from aiogram import Dispatcher
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.methods import Response
 
-from tests.test_handlers.mocked_bot import MockedBot
-
+from tests.mocked_bot import MockedBot
+from tests.mocked_datetime import MockDatetime
 
 @pytest_asyncio.fixture()
 async def storage():
@@ -31,3 +31,8 @@ async def dispatcher():
         yield dp
     finally:
         await dp.emit_shutdown()
+
+
+@pytest.fixture()
+def mock_datetime():
+    return MockDatetime

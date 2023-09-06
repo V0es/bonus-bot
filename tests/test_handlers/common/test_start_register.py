@@ -2,9 +2,6 @@ import pytest
 
 from unittest.mock import AsyncMock
 
-from aiogram.fsm.context import FSMContext
-from aiogram.fsm.storage.base import StorageKey
-from aiogram.methods import Response
 
 from telegram_bot.keyboards import (get_unregistered_start_keyboard as unreg_start_kb,
                                     get_registered_start_keyboard as reg_start_kb,
@@ -14,7 +11,7 @@ from telegram_bot.handlers.common.start import start_unregistered, start_registe
 from telegram_bot.handlers.common.register import (register, resend_otp, confirm_otp,
                                                    enter_fullname, enter_phone_number, enter_email)
 from telegram_bot.states import Register
-from tests.utils import TEST_USER, TEST_USER_CHAT, get_message, create_state
+from tests.utils import create_state
 
 
 @pytest.mark.asyncio
@@ -53,7 +50,8 @@ async def test_register(storage, bot):
 
 @pytest.mark.asyncio
 async def test_enter_phone_number(storage, bot):
-    message = get_message('+70000000000', bot)
+    message = AsyncMock()
+    message.text = '+70000000000'
     state = create_state(storage, bot)
     await enter_phone_number(message, state)
 
@@ -129,6 +127,7 @@ async def test_confirm_otp_default(storage, bot):
 async def test_enter_fullname(storage, bot):
     message = AsyncMock()
     state = create_state(storage, bot)
+
     # Test valid fullname
     message.text = 'Test Test'
     await enter_fullname(message, state, AsyncMock())
