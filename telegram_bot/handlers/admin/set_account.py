@@ -43,3 +43,4 @@ async def enter_new_account(message: types.Message, state: FSMContext, session: 
         'Баллы успешно изменены.',
         reply_markup=back_to_mainmenu_kb()
     )
+    await state.clear()

@@ -10,10 +10,7 @@ from aiogram.utils.token import TokenValidationError
 
 from telegram_bot.config import config
 
-from telegram_bot.handlers.common import register_common_handlers
-from telegram_bot.handlers.client import register_client_handlers
-from telegram_bot.handlers.admin import register_admin_handlers
-from telegram_bot.handlers.admin.owner import register_owner_handlers
+from telegram_bot.handlers import register_all_handlers
 from telegram_bot.middlewares import register_middlewares
 
 from telegram_bot.db.engine import get_session_pool, create_engine, proceed_schemas
@@ -55,10 +52,7 @@ async def main() -> None:
     await proceed_schemas(session_pool, BaseModel.metadata, engine, config.debug)
 
     register_middlewares(dp, session_pool, bot)
-    register_common_handlers(dp, session_pool)
-    register_client_handlers(dp, session_pool)
-    register_admin_handlers(dp, session_pool)
-    register_owner_handlers(dp, session_pool)
+    register_all_handlers(dp, session_pool)
     
     await dp.start_polling(bot)
 

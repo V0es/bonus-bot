@@ -13,7 +13,6 @@ from telegram_bot.utils.web import sms_auth
 
 from telegram_bot.db.requests import get_user_by_id
 
-from telegram_bot.keyboards import get_back_to_main_menu_keyboard as back_to_mainmenu_kb
 
 router = Router()
 

@@ -33,6 +33,7 @@ async def enter_new_fullname(message: types.Message, state: FSMContext, session:
         try:
             await change_user_fullname(session, message.from_user.id, answer)
             await message.answer('Имя успешно изменено!', reply_markup=back_to_mainmenu_kb())
+            await state.clear()
         except UserNotFoundException:
             await message.answer('Произошёл сбой. Попробуйте позже', reply_markup=back_to_mainmenu_kb())
             await state.clear()

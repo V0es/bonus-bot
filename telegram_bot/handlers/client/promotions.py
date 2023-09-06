@@ -1,6 +1,6 @@
 from aiogram import types
 
-from telegram_bot.keyboards import get_back_to_main_menu_keyboard as back_kb
+from telegram_bot.keyboards import get_back_to_main_menu_keyboard as back_to_mainmenu_kb
 
 
 async def promotions(callback: types.CallbackQuery):
@@ -27,5 +27,5 @@ async def promotions(callback: types.CallbackQuery):
 При заказе от 2-ух пар обуви
 действует бесплатная доставка по
 Москве.''',
-        reply_markup=back_kb()
+        reply_markup=back_to_mainmenu_kb()
     )
