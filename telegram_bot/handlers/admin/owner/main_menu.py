@@ -9,7 +9,7 @@ from telegram_bot.db.requests import get_user_by_id
 
 from telegram_bot.exceptions import UserNotFoundException
 
-from telegram_bot.states import UserState, AdminState, OwnerState
+from telegram_bot.states import AdminState, OwnerState
 
 router = Router()
 

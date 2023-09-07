@@ -1,7 +1,8 @@
 import pytest
 
-from unittest.mock import AsyncMock
+from unittest.mock import AsyncMock, Mock
 
+from aiogram.fsm.storage.memory import MemoryStorage
 
 from telegram_bot.keyboards import (get_unregistered_start_keyboard as unreg_start_kb,
                                     get_registered_start_keyboard as reg_start_kb,
@@ -11,6 +12,7 @@ from telegram_bot.handlers.common.start import start_unregistered, start_registe
 from telegram_bot.handlers.common.register import (register, resend_otp, confirm_otp,
                                                    enter_fullname, enter_phone_number, enter_email)
 from telegram_bot.states import Register
+from tests.mocked_bot import MockedBot
 from tests.utils import create_state
 
 
@@ -74,7 +76,10 @@ async def test_resend_otp(storage, bot):
 
 
 @pytest.mark.asyncio
-async def test_confirm_otp_email(storage, bot):
+async def test_confirm_otp_email(storage: MemoryStorage, bot: MockedBot, mocker: Mock):
+    mocker.patch(
+        'telegram_bot.handlers.common.register.change_email'
+    )
     message = AsyncMock()
     message.text = '0000'
     state = create_state(storage, bot)
@@ -92,7 +97,10 @@ async def test_confirm_otp_email(storage, bot):
 
 
 @pytest.mark.asyncio
-async def test_confirm_otp_phone(storage, bot):
+async def test_confirm_otp_phone(storage: MemoryStorage, bot: MockedBot, mocker: Mock):
+    mocker.patch(
+        'telegram_bot.handlers.common.register.change_phone_number'
+    )
     message = AsyncMock()
     message.text = '0000'
     state = create_state(storage, bot)
@@ -110,7 +118,7 @@ async def test_confirm_otp_phone(storage, bot):
 
 
 @pytest.mark.asyncio
-async def test_confirm_otp_default(storage, bot):
+async def test_confirm_otp_default(storage: MemoryStorage, bot: MockedBot):
     message = AsyncMock()
     message.text = '0000'
     state = create_state(storage, bot)
@@ -124,7 +132,10 @@ async def test_confirm_otp_default(storage, bot):
 
 
 @pytest.mark.asyncio
-async def test_enter_fullname(storage, bot):
+async def test_enter_fullname(storage: MemoryStorage, bot: MockedBot, mocker: Mock):
+    mocker.patch(
+        'telegram_bot.handlers.common.register.change_email'
+    )
     message = AsyncMock()
     state = create_state(storage, bot)
 

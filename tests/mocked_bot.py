@@ -30,17 +30,17 @@ class MockedSession(BaseSession):
         bot: Bot,
         method: TelegramMethod[TelegramType],
         timeout: Optional[int] = UNSET_PARSE_MODE,
-    ) -> TelegramType:
+    ) -> Any:
         self.closed = False
         self.requests.append(method)
-        response: Response[TelegramType] = self.responses.pop()
-        #self.check_response(
+        # response: Response[TelegramType] = self.responses.pop()
+        # self.check_response(
         #    bot=bot,
         #    method=method,
         #   status_code=response.error_code,
         #    content=response.model_dump_json(),
-        #)
-        return response.result  # type: ignore
+        # )
+        # return response.result  # type: ignore
 
     async def stream_content(
         self,

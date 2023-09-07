@@ -7,6 +7,7 @@ from aiogram.methods import Response
 from tests.mocked_bot import MockedBot
 from tests.mocked_datetime import MockDatetime
 
+
 @pytest_asyncio.fixture()
 async def storage():
     tmp_storage = MemoryStorage()
@@ -16,11 +17,11 @@ async def storage():
         await tmp_storage.close()
 
 
-@pytest.fixture()
-def bot():
+@pytest_asyncio.fixture()
+async def bot():
     bot = MockedBot()
     bot.session.add_result(Response(ok=True))
-    return bot
+    yield bot
 
 
 @pytest_asyncio.fixture()
@@ -33,6 +34,7 @@ async def dispatcher():
         await dp.emit_shutdown()
 
 
-@pytest.fixture()
-def mock_datetime():
-    return MockDatetime
+@pytest_asyncio.fixture()
+async def mock_datetime():
+    dt_mock = MockDatetime
+    yield dt_mock
