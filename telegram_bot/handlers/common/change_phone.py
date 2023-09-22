@@ -11,6 +11,8 @@ from telegram_bot.utils.validators import validate_phone_number
 from telegram_bot.utils.otp import generate_otp
 from telegram_bot.utils.web import sms_auth
 
+from telegram_bot.keyboards.confirm_otp_keyboard import confirm_otp_keyboard as confirm_otp_kb
+
 from telegram_bot.db.requests import get_user_by_id
 
 
@@ -46,4 +48,6 @@ async def enter_new_phone(message: types.Message, state: FSMContext, session: As
     await state.update_data(phone_number=old_phone_number)
     sms_auth.sendSMS(old_phone_number[1:], f'{otp_code}')
     await state.set_state(Register.confirm_otp)
-    await message.answer('Отлично, теперь введите код из СМС, который мы Вам выслали на старый номер для подтверждения')
+    await message.answer(
+        'Отлично, теперь введите код из СМС, который мы Вам выслали на старый номер для подтверждения',
+        reply_markup=confirm_otp_kb)

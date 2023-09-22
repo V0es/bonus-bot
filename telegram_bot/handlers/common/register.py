@@ -45,13 +45,14 @@ async def enter_phone_number(message: types.Message, state: FSMContext):
     sms_auth.sendSMS(recipients=answer[1:], message=f'{otp_code}')
     await message.answer(
         'В ближайшее время вам на телефон поступит звонок от робота, который продиктует 4-значный одноразовый пароль.\n'
-        'Для подтверждения введите полученный пароль'
+        'Для подтверждения введите полученный пароль',
+        reply_markup=confirm_otp_kb
     )
     await state.set_state(Register.confirm_otp)
 
 
 @router.message()
-async def enter_email(message: types.Message, state: FSMContext):  # TODO: проверка на корректность почты
+async def enter_email(message: types.Message, state: FSMContext):
     answer = message.text
     if not validate_email(answer):
         await message.answer('Похоже, вы ввели некорректный адрес электронной почты. '
