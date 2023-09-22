@@ -2,7 +2,7 @@ import re
 
 
 def validate_phone_number(phone_number: str) -> bool:
-    regexp = '^\+\d{1,3}\d{3}\d{7}$'
+    regexp = '^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$'
     if len(re.findall(regexp, phone_number)) == 1:
         return True
     else:
