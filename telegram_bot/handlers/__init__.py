@@ -78,7 +78,8 @@ def _register_common_handlers(router: Router, session_pool: sessionmaker) -> Non
         ))
 
     router.callback_query.register(register, F.data == 'register')
-    router.callback_query.register(resend_otp, Register.resend_otp)
+    router.callback_query.register(resend_otp, Register.confirm_otp, F.data == 'resend_otp')
+    router.callback_query.register(resend_otp, Register.resend_otp, F.data == 'resend_otp')
 
 
 def _register_client_handlers(router: Router, session_pool: sessionmaker) -> None:

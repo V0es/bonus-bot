@@ -43,12 +43,12 @@ async def enter_phone_number(message: types.Message, state: FSMContext):
     otp_code = generate_otp()
     await state.update_data(otp_code=otp_code)
     sms_auth.sendSMS(recipients=answer[1:], message=f'{otp_code}')
+    await state.set_state(Register.confirm_otp)
     await message.answer(
         'В ближайшее время вам на телефон поступит звонок от робота, который продиктует 4-значный одноразовый пароль.\n'
         'Для подтверждения введите полученный пароль',
         reply_markup=confirm_otp_kb
     )
-    await state.set_state(Register.confirm_otp)
 
 
 @router.message()
@@ -73,8 +73,8 @@ async def resend_otp(callback: types.CallbackQuery, state: FSMContext):
     await state.update_data(otp_code=otp_code)
     sms_auth.sendSMS(recipients=phone_number[1:], message=f'{otp_code}')
     await callback.message.edit_text(
-        'В ближайшее время вам на телефон поступит звонок от робота, который продиктует 4-значный одноразовый пароль.\n'
-        'Для подтверждения введите полученный пароль')
+        'Вам был выслан новый код подтверждения',
+        reply_markup=confirm_otp_kb)
     await state.set_state(Register.confirm_otp)
 
 
