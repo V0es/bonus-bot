@@ -24,7 +24,7 @@ router = Router()
 @router.callback_query()
 async def register(callback: types.CallbackQuery, state: FSMContext):
     await callback.message.edit_text(
-        'Вы вошли в регистрацию, введи свой номер телефона, в указанном виде, например, +79991234567'
+        'Вы вошли в регистрацию, введите свой номер телефона, в указанном виде, например, +79991234567'
     )
     await state.set_state(Register.enter_phone_number)
     await callback.answer()
@@ -126,7 +126,7 @@ async def confirm_otp(message: types.Message, state: FSMContext, session: AsyncS
             await state.clear()
             return
 
-        await message.answer('Отлично, теперь введи почту.')
+        await message.answer('Отлично, теперь введите почту.')
         await state.set_state(Register.enter_email)
 
     else:  # if user entered invalid otp
@@ -137,7 +137,7 @@ async def confirm_otp(message: types.Message, state: FSMContext, session: AsyncS
 
 @router.message()
 async def enter_fullname(message: types.Message, state: FSMContext,
-                         session: AsyncSession):  # TODO: проверка на корректность фио
+                         session: AsyncSession):
     answer = message.text
     if not validate_fullname(answer):
         await message.answer(
