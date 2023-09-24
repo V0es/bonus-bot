@@ -6,7 +6,8 @@ from aiogram.fsm.storage.memory import MemoryStorage
 
 from telegram_bot.keyboards import (get_unregistered_start_keyboard as unreg_start_kb,
                                     get_registered_start_keyboard as reg_start_kb,
-                                    get_back_to_main_menu_keyboard as back_to_mainmenu_kb)
+                                    get_back_to_main_menu_keyboard as back_to_mainmenu_kb,
+                                    confirm_otp_keyboard as confirm_otp_kb)
 
 from telegram_bot.handlers.common.start import start_unregistered, start_registered
 from telegram_bot.handlers.common.register import (register, resend_otp, confirm_otp,
@@ -43,7 +44,7 @@ async def test_register(storage, bot):
     await register(call, state)
 
     call.message.edit_text.assert_called_with(
-        'Вы вошли в регистрацию, введи свой номер телефона, в указанном виде, например, +79991234567'
+        'Вы вошли в регистрацию, введите свой номер телефона, в указанном виде, например, +79991234567'
     )
     assert await state.get_state() == Register.enter_phone_number
 
@@ -68,8 +69,8 @@ async def test_resend_otp(storage, bot):
     await resend_otp(call, state)
 
     call.message.edit_text.assert_called_with(
-        'В ближайшее время вам на телефон поступит звонок от робота, который продиктует 4-значный одноразовый пароль.\n'
-        'Для подтверждения введите полученный пароль'
+        'Вам был выслан новый код подтверждения',
+        reply_markup=confirm_otp_kb
     )
 
     assert await state.get_state() == Register.confirm_otp
@@ -126,7 +127,7 @@ async def test_confirm_otp_default(storage: MemoryStorage, bot: MockedBot):
     await state.update_data(otp_code='0000')
     await confirm_otp(message, state, AsyncMock())
     message.answer.assert_called_with(
-        'Отлично, теперь введи почту.'
+        'Отлично, теперь введите почту.'
     )
     assert await state.get_state() == Register.enter_email
 

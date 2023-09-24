@@ -4,6 +4,7 @@ import pytest
 from aiogram.fsm.storage.memory import MemoryStorage
 
 from telegram_bot.handlers import change_email, enter_new_email
+from telegram_bot.keyboards.confirm_otp_keyboard import confirm_otp_keyboard as confirm_otp_kb
 from telegram_bot.states import UserState, Register
 from tests.mocked_bot import MockedBot
 from tests.utils import create_state
@@ -30,7 +31,8 @@ async def test_enter_new_email(storage: MemoryStorage, bot: MockedBot, mocker: M
     await enter_new_email(message, state, AsyncMock())
     assert await state.get_state() == Register.confirm_otp
     message.answer.assert_called_with(
-        'Отлично, теперь введите код, который Вам продиктует бот из входящего звонка.'
+        'Отлично, теперь введите код, который Вам продиктует бот из входящего звонка.',
+        reply_markup=confirm_otp_kb
     )
 
     # Invalid email

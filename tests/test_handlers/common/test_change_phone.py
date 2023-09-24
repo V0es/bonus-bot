@@ -5,6 +5,8 @@ from aiogram.fsm.storage.memory import MemoryStorage
 
 from telegram_bot.handlers.common.change_phone import change_phone, enter_new_phone
 from telegram_bot.states import UserState, Register
+from telegram_bot.keyboards.confirm_otp_keyboard import confirm_otp_keyboard as confirm_otp_kb
+
 from tests.mocked_bot import MockedBot
 from tests.utils import create_state
 
@@ -29,5 +31,6 @@ async def test_enter_new_phone(storage: MemoryStorage, bot: MockedBot, mocker: M
 
     assert await state.get_state() == Register.confirm_otp
     message.answer.assert_called_with(
-        'Отлично, теперь введите код из СМС, который мы Вам выслали на старый номер для подтверждения'
+        'Отлично, теперь введите код из СМС, который мы Вам выслали на старый номер для подтверждения',
+        reply_markup=confirm_otp_kb
     )
