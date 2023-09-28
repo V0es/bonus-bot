@@ -22,7 +22,7 @@ services:
       - 'pgdata:/var/lib/postgresql/data'
     restart: on-failure
     ports:
-      - "$POSTGRES_PORT:$POSTGRES_PORT"
+      - "5432:5432"
   
   bot:
     build: .
