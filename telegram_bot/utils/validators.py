@@ -2,7 +2,7 @@ import re
 
 
 def validate_phone_number(phone_number: str) -> bool:
-    regexp = '^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$'
+    regexp = '^\+\d{1,3}\d{3}\d{7}$'
     if len(re.findall(regexp, phone_number)) == 1:
         return True
     else:
@@ -15,10 +15,6 @@ def validate_email(email: str) -> bool:
         return True
     else:
         return False
-
-
-def validate_otp_codes(valid_code: str, user_code: str) -> bool:
-    pass
 
 
 def validate_fullname(fullname: str) -> bool:
