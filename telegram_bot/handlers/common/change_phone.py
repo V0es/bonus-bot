@@ -46,7 +46,7 @@ async def enter_new_phone(message: types.Message, state: FSMContext, session: As
         return
     old_phone_number = user.phone_number
     await state.update_data(phone_number=old_phone_number)
-    sms_auth.sendSMS(old_phone_number[1:], f'{otp_code}')
+    sms_auth.send_sms(old_phone_number[1:], f'{otp_code}')
     await state.set_state(Register.confirm_otp)
     await message.answer(
         'Отлично, теперь введите код из СМС, который мы Вам выслали на старый номер для подтверждения',

@@ -46,7 +46,7 @@ async def enter_new_email(message: types.Message, state: FSMContext, session: As
         return
     phone_number = user.phone_number
     await state.update_data(phone_number=phone_number)
-    sms_auth.sendSMS(phone_number[1:], f'{otp_code}')
+    sms_auth.send_sms(phone_number[1:], f'{otp_code}')
     await state.set_state(Register.confirm_otp)
     await message.answer(
         'Отлично, теперь введите код, который Вам продиктует бот из входящего звонка.',

@@ -3,7 +3,6 @@ from telegram_bot.keyboards import (get_registered_start_keyboard as reg_start_k
 
 
 from aiogram import types, Router
-from aiogram.fsm.context import FSMContext
 
 router = Router()
 

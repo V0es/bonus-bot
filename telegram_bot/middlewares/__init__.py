@@ -1,3 +1,5 @@
+import logging
+
 from aiogram import Router, Bot
 
 from sqlalchemy.orm import sessionmaker
@@ -10,3 +12,4 @@ def register_middlewares(router: Router, session_pool: sessionmaker, bot: Bot):
     router.message.middleware(DatabaseMiddleware(session_pool))
     router.callback_query.middleware(DatabaseMiddleware(session_pool))
     router.message.middleware(BotMiddleware(bot))
+    logging.info('Middlewares registered')

@@ -1,3 +1,5 @@
+import logging
+
 from aiogram import Router, F
 from aiogram.filters import CommandStart, or_f
 
@@ -18,6 +20,7 @@ from telegram_bot.handlers.common.start import start_unregistered, start_registe
 from telegram_bot.handlers.client.account_info import account_info
 from telegram_bot.handlers.client.main_menu import client_main_menu
 from telegram_bot.handlers.client.promotions import promotions
+from telegram_bot.handlers.client.support import support
 
 from telegram_bot.handlers.admin.add_order import enter_customer_number, enter_order_amount, add_order
 from telegram_bot.handlers.admin.export_database import export_database
@@ -81,6 +84,8 @@ def _register_common_handlers(router: Router, session_pool: sessionmaker) -> Non
     router.callback_query.register(resend_otp, Register.confirm_otp, F.data == 'resend_otp')
     router.callback_query.register(resend_otp, Register.resend_otp, F.data == 'resend_otp')
 
+    logging.info('Common handlers registered')
+
 
 def _register_client_handlers(router: Router, session_pool: sessionmaker) -> None:
     router.callback_query.register(
@@ -104,6 +109,15 @@ def _register_client_handlers(router: Router, session_pool: sessionmaker) -> Non
         UserState.main_menu,
         F.data == 'promotions'
     )
+
+    router.callback_query.register(
+        support,
+        IsRegistered(session_pool),
+        UserState.main_menu,
+        F.data == 'support'
+    )
+
+    logging.info('Client handlers registered')
 
 
 def _register_admin_handlers(router: Router, session_pool: sessionmaker) -> None:
@@ -169,6 +183,8 @@ def _register_admin_handlers(router: Router, session_pool: sessionmaker) -> None
         AdminState.enter_new_account
     )
 
+    logging.info('Admin handlers registered')
+
 
 def _register_owner_handlers(router: Router, session_pool: sessionmaker) -> None:
     router.callback_query.register(
@@ -198,3 +214,5 @@ def _register_owner_handlers(router: Router, session_pool: sessionmaker) -> None
         IsOwner(session_pool),
         OwnerState.enter_admin_phone
     )
+
+    logging.info('Owner handlers registered')

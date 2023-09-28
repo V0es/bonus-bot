@@ -5,12 +5,9 @@ from sqlalchemy.orm import sessionmaker
 from aiogram import BaseMiddleware
 from aiogram.types import Message, TelegramObject, CallbackQuery
 
-from telegram_bot.db.requests import get_user_by_id
-
 
 class DatabaseMiddleware(BaseMiddleware):
     def __init__(self, session_pool: sessionmaker) -> None:
-        # super.__init__()
         self.session_pool = session_pool
 
     async def __call__(

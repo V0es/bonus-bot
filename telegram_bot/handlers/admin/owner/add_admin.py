@@ -1,4 +1,4 @@
-from aiogram import types, Bot
+from aiogram import types
 from aiogram.fsm.context import FSMContext
 
 

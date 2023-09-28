@@ -7,18 +7,23 @@ from sqlalchemy.schema import MetaData
 
 
 def create_engine(url: URL) -> AsyncEngine:
-    return create_async_engine(url, echo=False, pool_pre_ping=True)
+    engine = create_async_engine(url, echo=False, pool_pre_ping=True)
+    logging.info('Engine created')
+    return engine
 
 
 def get_session_pool(engine: AsyncEngine) -> sessionmaker:
-    return sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
+    # noinspection PyTypeChecker
+    session_pool = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
+    logging.info('Session pool created')
+    return session_pool
 
 
-async def proceed_schemas(session_pool: sessionmaker, metadata: MetaData, engine: AsyncEngine, debug: bool) -> None:
-    
+async def proceed_schemas(metadata: MetaData, engine: AsyncEngine, debug: bool) -> None:
     async with engine.begin() as conn:
         if debug:
+            logging.warning('RUNNING IN DEBUG MODE')
             # await conn.run_sync(metadata.drop_all)
             pass
         await conn.run_sync(metadata.create_all)
-    # logging.INFO('Schemas proceeded')
+    logging.info('Created database')

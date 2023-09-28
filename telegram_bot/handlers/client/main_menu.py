@@ -22,10 +22,14 @@ async def client_main_menu(callback: types.CallbackQuery, state: FSMContext, ses
     try:
         user = await get_user_by_id(session, callback.from_user.id)
     except UserNotFoundException:
-        await callback.message.answer('Упс... Похоже, у нас сбой на сервере, мы уже работаем над исправлением, зайдите чуть попозже')
+        await callback.message.answer(
+            'Упс... Похоже, у нас сбой на сервере, мы уже работаем над исправлением, зайдите чуть попозже'
+        )
         return
-    await callback.message.edit_text(f'Доброго времени суток, {user.fullname}.\n'
-                                     'Вы находитесь в главном меню бота.\n'
-                                     'Здесь вы можете посмотреть баланс баллов, перейти в свой профиль и увидеть новые промоакции.',
-                                     reply_markup=client_mainmenu_kb())
+    await callback.message.edit_text(
+        f'Доброго времени суток, {user.fullname}.\n'
+        'Вы находитесь в главном меню бота.\n'
+        'Здесь вы можете посмотреть баланс баллов, перейти в свой профиль и увидеть новые промоакции.',
+        reply_markup=client_mainmenu_kb())
+
     await callback.answer()

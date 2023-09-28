@@ -1,3 +1,5 @@
+import logging
+
 import xlsxwriter
 import os
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -62,4 +64,5 @@ class DBExport:
         worksheet.autofit()
         workbook.close()
         export_table = FSInputFile(self.filepath, self.filename)
+        logging.info('Created Excel export')
         return export_table

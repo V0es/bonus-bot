@@ -22,6 +22,7 @@ async def main() -> None:
     if config.bot_fsm_storage == 'memory':
         # Initialize memory storage
         storage = MemoryStorage()
+        logging.info('Memory storage initialized')
     
     elif config.bot_fsm_storage == 'redis':
         redis = Redis(
@@ -32,14 +33,17 @@ async def main() -> None:
         )
         # Initialize redis storage
         storage = RedisStorage(redis=redis)
+        logging.info('Redis storage initialized')
     else:
         logging.critical('FSM storage type is not specified or not supported')
         return
     # Initialize bot and dispatcher
     dp = Dispatcher(storage=storage)
+    logging.info('Dispatcher initialized')
     
     try:
         bot = Bot(token=config.bot_token, parse_mode=ParseMode.HTML)
+        logging.info('Bot initialized')
     except TokenValidationError:
         logging.critical('Telegram bot token is invalid, unable to start bot')  # log message and return
         return
@@ -49,7 +53,7 @@ async def main() -> None:
     engine = create_engine(config.db_url)
     session_pool = get_session_pool(engine)
    
-    await proceed_schemas(session_pool, BaseModel.metadata, engine, config.debug)
+    await proceed_schemas(BaseModel.metadata, engine, config.debug)
 
     register_middlewares(dp, session_pool, bot)
     register_all_handlers(dp, session_pool)
