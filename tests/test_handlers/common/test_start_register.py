@@ -44,7 +44,7 @@ async def test_register(storage, bot):
     await register(call, state)
 
     call.message.edit_text.assert_called_with(
-        'Вы вошли в регистрацию, введите свой номер телефона, в указанном виде, например, +79991234567'
+        'Вы вошли в регистрацию, введите свой номер телефона, в указанном формате, например, +79991234567'
     )
     assert await state.get_state() == Register.enter_phone_number
 
