@@ -15,7 +15,7 @@ from telegram_bot.exceptions import UserAlreadyExists, UserNotFoundException
 
 from telegram_bot.utils.otp import generate_otp
 from telegram_bot.utils.web import sms_auth
-from telegram_bot.utils.validators import validate_email, validate_fullname, validate_otp_codes, validate_phone_number
+from telegram_bot.utils.validators import validate_email, validate_fullname, validate_phone_number
 
 
 router = Router()
@@ -24,7 +24,7 @@ router = Router()
 @router.callback_query()
 async def register(callback: types.CallbackQuery, state: FSMContext):
     await callback.message.edit_text(
-        'Вы вошли в регистрацию, введите свой номер телефона, в указанном виде, например, +79991234567'
+        'Вы вошли в регистрацию, введите свой номер телефона, в указанном формате, например, +79991234567'
     )
     await state.set_state(Register.enter_phone_number)
     await callback.answer()
@@ -42,40 +42,13 @@ async def enter_phone_number(message: types.Message, state: FSMContext):
     await state.update_data(phone_number=answer)
     otp_code = generate_otp()
     await state.update_data(otp_code=otp_code)
-    sms_auth.sendSMS(recipients=answer[1:], message=f'{otp_code}')
+    sms_auth.send_sms(recipients=answer[1:], message=f'{otp_code}')
     await state.set_state(Register.confirm_otp)
     await message.answer(
         'В ближайшее время вам на телефон поступит звонок от робота, который продиктует 4-значный одноразовый пароль.\n'
         'Для подтверждения введите полученный пароль',
         reply_markup=confirm_otp_kb
     )
-
-
-@router.message()
-async def enter_email(message: types.Message, state: FSMContext):
-    answer = message.text
-    if not validate_email(answer):
-        await message.answer('Похоже, вы ввели некорректный адрес электронной почты. '
-                             'Проверьте правильность введённого ранее адреса или попробуйте другой.')
-        return
-    await state.update_data(email=answer)
-    await message.answer('Введите, пожалуйста, ваши имя и фамилию для профиля. Например, Иван Иванов')
-    await state.set_state(Register.enter_fullname)
-
-
-@router.callback_query()
-async def resend_otp(callback: types.CallbackQuery, state: FSMContext):
-    # TODO: check failed attempts
-
-    data = await state.get_data()
-    phone_number = data.get('phone_number')
-    otp_code = generate_otp()
-    await state.update_data(otp_code=otp_code)
-    sms_auth.sendSMS(recipients=phone_number[1:], message=f'{otp_code}')
-    await callback.message.edit_text(
-        'Вам был выслан новый код подтверждения',
-        reply_markup=confirm_otp_kb)
-    await state.set_state(Register.confirm_otp)
 
 
 @router.message()
@@ -135,6 +108,33 @@ async def confirm_otp(message: types.Message, state: FSMContext, session: AsyncS
         await message.answer('Вы ввели неверный пароль. Попробуйте отправить новый', reply_markup=confirm_otp_kb)
 
 
+@router.callback_query()
+async def resend_otp(callback: types.CallbackQuery, state: FSMContext):
+    # TODO: check failed attempts
+
+    data = await state.get_data()
+    phone_number = data.get('phone_number')
+    otp_code = generate_otp()
+    await state.update_data(otp_code=otp_code)
+    sms_auth.send_sms(recipients=phone_number[1:], message=f'{otp_code}')
+    await callback.message.edit_text(
+        'Вам был выслан новый код подтверждения',
+        reply_markup=confirm_otp_kb)
+    await state.set_state(Register.confirm_otp)
+
+
+@router.message()
+async def enter_email(message: types.Message, state: FSMContext):
+    answer = message.text
+    if not validate_email(answer):
+        await message.answer('Похоже, вы ввели некорректный адрес электронной почты. '
+                             'Проверьте правильность введённого ранее адреса или попробуйте другой.')
+        return
+    await state.update_data(email=answer)
+    await message.answer('Введите, пожалуйста, ваши имя и фамилию для профиля. Например, Иван Иванов')
+    await state.set_state(Register.enter_fullname)
+
+
 @router.message()
 async def enter_fullname(message: types.Message, state: FSMContext,
                          session: AsyncSession):
@@ -151,7 +151,7 @@ async def enter_fullname(message: types.Message, state: FSMContext,
     try:
         await add_user(session=session, state_data=data, user_id=message.from_user.id)
     except UserAlreadyExists:
-        await message.answer('Такой пользователь уже существует!')
+        await message.answer('Пользователь с такими данными уже существует!')
         await state.clear()
         return
     await state.clear()
