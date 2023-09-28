@@ -3,15 +3,15 @@ from aiogram.fsm.context import FSMContext
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from states import UserState
+from telegram_bot.states import UserState
 
-from utils.validators import validate_fullname
+from telegram_bot.utils.validators import validate_fullname
 
-from exceptions import UserNotFoundException
+from telegram_bot.exceptions import UserNotFoundException
 
-from db.requests import change_fullname as change_user_fullname
+from telegram_bot.db.requests import change_fullname as change_user_fullname
 
-from keyboards import get_back_to_main_menu_keyboard as back_to_mainmenu_kb
+from telegram_bot.keyboards import get_back_to_main_menu_keyboard as back_to_mainmenu_kb
 
 
 router = Router()
@@ -33,6 +33,7 @@ async def enter_new_fullname(message: types.Message, state: FSMContext, session:
         try:
             await change_user_fullname(session, message.from_user.id, answer)
             await message.answer('Имя успешно изменено!', reply_markup=back_to_mainmenu_kb())
+            await state.clear()
         except UserNotFoundException:
             await message.answer('Произошёл сбой. Попробуйте позже', reply_markup=back_to_mainmenu_kb())
             await state.clear()

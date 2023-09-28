@@ -3,13 +3,13 @@ from aiogram.fsm.context import FSMContext
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from keyboards import get_admin_mainmenu_keyboard as admin_mainmenu_kb
+from telegram_bot.keyboards import get_admin_mainmenu_keyboard as admin_mainmenu_kb
 
-from db.requests import get_user_by_id
+from telegram_bot.db.requests import get_user_by_id
 
-from exceptions import UserNotFoundException
+from telegram_bot.exceptions import UserNotFoundException
 
-from states import UserState, AdminState
+from telegram_bot.states import AdminState
 
 router = Router()
 
@@ -22,14 +22,17 @@ async def admin_main_menu(callback: types.CallbackQuery, state: FSMContext, sess
     try:
         user = await get_user_by_id(session, callback.from_user.id)
     except UserNotFoundException:
-        await callback.message.answer('Упс... Похоже, у нас сбой на сервере, мы уже работаем над исправлением, зайдите чуть попозже')
+        await callback.message.answer(
+            'Упс... Похоже, у нас сбой на сервере, мы уже работаем над исправлением, зайдите чуть попозже'
+        )
         return
     if prev_state == AdminState.export:
         await callback.message.edit_reply_markup(reply_markup=None)
         await callback.message.answer(
             f'Доброго времени стуток, {user.fullname}!\n'
             'Вы находитесь в админской панели.\n'
-            'Здесь вы можете создать новый заказ, изменить баллы пользователей, выгрузить данные и редактировать свой профиль.',
+            'Здесь вы можете создать новый заказ, изменить баллы пользователей, '
+            'выгрузить данные и редактировать свой профиль.',
             reply_markup=admin_mainmenu_kb()
         )
 
@@ -37,6 +40,7 @@ async def admin_main_menu(callback: types.CallbackQuery, state: FSMContext, sess
         await callback.message.edit_text(
             f'Доброго времени стуток, {user.fullname}!\n'
             'Вы находитесь в админской панели.\n'
-            'Здесь вы можете создать новый заказ, изменить баллы пользователей, выгрузить данные и редактировать свой профиль.',
+            'Здесь вы можете создать новый заказ, изменить баллы пользователей, '
+            'выгрузить данные и редактировать свой профиль.',
             reply_markup=admin_mainmenu_kb()
         )

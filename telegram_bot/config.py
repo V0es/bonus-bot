@@ -11,18 +11,19 @@ class Config():
     
     def __init__(self) -> None:
         self.load_env()
-        self.bot_token: str = self.get_variable('bot_token')
+        self.bot_token: str = self.get_variable('BOT_TOKEN')
         self.bot_fsm_storage: str = self.get_variable('bot_fsm_storage')
-        self.pg_user: str = self.get_variable('pg_user')
-        self.pg_pass: str | None = self.get_variable('pg_pass')
-        self.pg_host: str = self.get_variable('pg_host')
-        self.pg_port: str = self.get_variable('pg_port')
-        self.db_name: str = self.get_variable('db_name')
+        self.pg_user: str = self.get_variable('POSTGRES_USER')
+        self.pg_pass: str | None = self.get_variable('POSTGRES_PASSWORD')
+        self.pg_host: str = self.get_variable('POSTGRES_HOST')
+        self.pg_port: str = self.get_variable('POSTGRES_PORT')
+        self.db_name: str = self.get_variable('POSTGRES_DB')
         self.db_url = self._get_db_url()
         self.debug = self.validate_debug(self.get_variable('debug'))
         self.sms_project_name: str = self.get_variable('sms_project_name')
         self.sms_api_key: str = self.get_variable('sms_api_key')
-        self.admin_id: str = self.get_variable('admin_id')
+        self.owner_id: str = self.get_variable('OWNER_ID')
+        self.dev_id: str = self.get_variable('DEV_ID')
         self.redis_host: str = self.get_variable('redis_host')
         self.redis_port: str = self.get_variable('redis_port')
         self.redis_username: str = self.get_variable('redis_username')
@@ -30,7 +31,7 @@ class Config():
 
     @staticmethod
     def load_env():
-        load_dotenv('.env')
+        load_dotenv()
     
     @staticmethod
     def get_variable(key: str) -> str:

@@ -1,8 +1,8 @@
 from aiogram import types
 from aiogram.fsm.context import FSMContext
 
-from states import OwnerState
-from keyboards import get_back_to_main_menu_keyboard as back_to_mainmenu_kb
+from telegram_bot.states import OwnerState
+from telegram_bot.keyboards import get_back_to_main_menu_keyboard as back_to_mainmenu_kb
 
 
 async def remove_admin(callback: types.CallbackQuery, state: FSMContext):

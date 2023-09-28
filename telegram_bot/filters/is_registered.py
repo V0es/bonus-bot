@@ -3,9 +3,9 @@ from aiogram.types import Message, CallbackQuery
 
 from sqlalchemy.orm import sessionmaker
 
-from db.requests import get_user_by_id
+from telegram_bot.db.requests import get_user_by_id
 
-from exceptions import UserNotFoundException
+from telegram_bot.exceptions import UserNotFoundException
 
 
 class IsRegistered(Filter):

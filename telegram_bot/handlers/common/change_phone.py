@@ -3,17 +3,18 @@ from aiogram.fsm.context import FSMContext
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from states import UserState, Register
+from telegram_bot.states import UserState, Register
 
-from exceptions import UserNotFoundException
+from telegram_bot.exceptions import UserNotFoundException
 
-from utils.validators import validate_phone_number
-from utils.otp import generate_otp
-from utils.web import sms_auth
+from telegram_bot.utils.validators import validate_phone_number
+from telegram_bot.utils.otp import generate_otp
+from telegram_bot.utils.web import sms_auth
 
-from db.requests import get_user_by_id
+from telegram_bot.keyboards.confirm_otp_keyboard import confirm_otp_keyboard as confirm_otp_kb
 
-from keyboards import get_back_to_main_menu_keyboard as back_to_mainmenu_kb
+from telegram_bot.db.requests import get_user_by_id
+
 
 router = Router()
 
@@ -45,6 +46,8 @@ async def enter_new_phone(message: types.Message, state: FSMContext, session: As
         return
     old_phone_number = user.phone_number
     await state.update_data(phone_number=old_phone_number)
-    sms_auth.sendSMS(old_phone_number[1:], f'{otp_code}')
+    sms_auth.send_sms(old_phone_number[1:], f'{otp_code}')
     await state.set_state(Register.confirm_otp)
-    await message.answer('Отлично, теперь введите код из СМС, который мы Вам выслали на старый номер для подтверждения')
+    await message.answer(
+        'Отлично, теперь введите код из СМС, который мы Вам выслали на старый номер для подтверждения',
+        reply_markup=confirm_otp_kb)

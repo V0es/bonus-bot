@@ -1,13 +1,13 @@
-from sqlalchemy import create_engine, String, ForeignKey, BigInteger, DateTime, Boolean
+from sqlalchemy import BigInteger, DateTime, Boolean
 
-from sqlalchemy.exc import IntegrityError
-from sqlalchemy.orm import as_declarative, Mapped, mapped_column, Session, declared_attr
+from sqlalchemy.orm import Mapped, mapped_column
 
 from sqlalchemy.sql.functions import current_timestamp
 
-from db.base import BaseModel
+from telegram_bot.db.base import BaseModel
 
 
+# noinspection PyProtectedMember
 class User(BaseModel):
     user_id: Mapped[int] = mapped_column(BigInteger, unique=True, nullable=False)
     fullname: Mapped[str] = mapped_column(nullable=False)
@@ -19,8 +19,7 @@ class User(BaseModel):
     is_owner: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
 
     def __repr__(self) -> str:
-        return f'''time:{self.timestamp}; id: {self.id}; user_id: {self.user_id}; fullname: {self.fullname};
-            phone_num: {self.phone_number}; email: {self.email}; bonus_points: {self.bonus_points}\n'''
+        return f'''user_id: {self.user_id}'''
     
     def __eq__(self, __o: object) -> bool:
         if __o._sa_class_manager.class_ is not User:

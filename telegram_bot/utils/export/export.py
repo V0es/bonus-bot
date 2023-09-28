@@ -1,10 +1,12 @@
+import logging
+
 import xlsxwriter
 import os
 from sqlalchemy.ext.asyncio import AsyncSession
 from aiogram.types import FSInputFile
 import datetime
 
-from db.requests import get_all_users
+from telegram_bot.db.requests import get_all_users
 
 
 class DBExport:
@@ -62,4 +64,5 @@ class DBExport:
         worksheet.autofit()
         workbook.close()
         export_table = FSInputFile(self.filepath, self.filename)
+        logging.info('Created Excel export')
         return export_table

@@ -3,9 +3,9 @@ from aiogram.types import Message, CallbackQuery
 
 from sqlalchemy.orm import sessionmaker
 
-from db.requests import is_owner
+from telegram_bot.db.requests import is_owner
 
-from exceptions import UserNotFoundException
+from telegram_bot.exceptions import UserNotFoundException
 
 
 class IsOwner(Filter):

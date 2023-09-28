@@ -14,9 +14,6 @@ def get_profile_keyboard() -> InlineKeyboardMarkup:
                 InlineKeyboardButton(text='Изменить email', callback_data='change_email')
             ],
             [
-                InlineKeyboardButton(text='Статус уведомлений(в разработке)', callback_data='0')
-            ],
-            [
                 InlineKeyboardButton(text='Вернуться в главное меню', callback_data='main_menu')
             ]
         ]

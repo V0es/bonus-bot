@@ -3,17 +3,17 @@ from aiogram.fsm.context import FSMContext
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from states import UserState, Register
+from telegram_bot.exceptions import UserNotFoundException
 
-from exceptions import UserNotFoundException
+from telegram_bot.states import UserState, Register
 
-from db.requests import get_user_by_id
+from telegram_bot.db.requests import get_user_by_id
 
-from utils.otp import generate_otp
-from utils.validators import validate_email
-from utils.web import sms_auth
+from telegram_bot.utils.otp import generate_otp
+from telegram_bot.utils.validators import validate_email
+from telegram_bot.utils.web import sms_auth
 
-from keyboards import get_back_to_main_menu_keyboard as back_to_mainmenu_kb
+from telegram_bot.keyboards import confirm_otp_keyboard as confirm_otp_kb
 
 router = Router()
 
@@ -46,6 +46,8 @@ async def enter_new_email(message: types.Message, state: FSMContext, session: As
         return
     phone_number = user.phone_number
     await state.update_data(phone_number=phone_number)
-    sms_auth.sendSMS(phone_number[1:], f'{otp_code}')
+    sms_auth.send_sms(phone_number[1:], f'{otp_code}')
     await state.set_state(Register.confirm_otp)
-    await message.answer('Отлично, теперь введите код из СМС, который мы Вам выслали для подтверждения')
+    await message.answer(
+        'Отлично, теперь введите код, который Вам продиктует бот из входящего звонка.',
+        reply_markup=confirm_otp_kb)

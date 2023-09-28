@@ -3,9 +3,9 @@ from aiogram.types import Message, CallbackQuery
 
 from sqlalchemy.orm import sessionmaker
 
-from db.requests import is_admin
+from telegram_bot.db.requests import is_admin
 
-from exceptions import UserNotFoundException
+from telegram_bot.exceptions import UserNotFoundException
 
 
 class IsAdmin(Filter):
