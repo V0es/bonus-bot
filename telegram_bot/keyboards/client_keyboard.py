@@ -13,7 +13,7 @@ def get_client_mainmenu_keyboard() -> InlineKeyboardMarkup:
             InlineKeyboardButton(text='Акции', callback_data='promotions'),
         ],
         [
-            InlineKeyboardButton(text='Связаться со службой поддержки(пока в разработке)', callback_data='0')
+            InlineKeyboardButton(text='Связаться со службой поддержки', callback_data='support')
         ]
         
     ])
